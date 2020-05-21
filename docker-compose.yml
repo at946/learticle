@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:12.3-alpine
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    environment:
+      - TZ=Asia/Tokyo
+      - POSTGRES_HOST_AUTH_METHOD=trust
+
+  web:
+    build: .
+    volumes:
+      - ./rails:/app
+    ports:
+      - 3000:3000
+    depends_on:
+      - db
