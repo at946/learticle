@@ -17,16 +17,25 @@
       </ul>
     </div>
 
-    <%= form_with model: nil, class: "mb-3" do |form| %>
+    <%= form_with model: @article, local: true, class: "mb-3" do |form| %>
+      <% if @article.errors.any? %>
+        <article class="message is-danger">
+          <ul class="message-body">
+            <% @article.errors.full_messages.each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </article>
+      <% end %>
       <div class="field">
         <div class="control has-icons-left">
-          <input type="text" class="input" placeholder="URL" autofocus>
+          <%= form.text_field :url, class: "input", placeholder: "URL", autofocus: true %>
           <span class="icon is-small is-left"><i class="fas fa-link"></i></span>
         </div>
       </div>
       <div class="field">
         <div class="control has-text-centered">
-          <button class="button is-primary is-outlined is-rounded">
+          <button type="submit" class="button is-primary is-outlined is-rounded">
             <span class="icon"><i class="fas fa-plus-circle"></i></span>
             <span>追加する</span>
           </button>
@@ -35,9 +44,9 @@
     <% end %>
 
     <div class="columns is-multiline">
-      <% 5.times do %>
+      <% @articles.each do |article| %>
         <div class="column is-half-tablet is-one-third-desktop is-one-quarter-fullhd">
-          <%= render partial: "article_card" %>
+          <%= render partial: "article_card", locals: {article: article} %>
         </div>
       <% end %>
     </div>

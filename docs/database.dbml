@@ -3,8 +3,8 @@ Project Larticle {
 }
 
 Table articles {
-  id string [pk, note: "uuidで12文字"]
-  url string [not null, note: "max-length: 2000"]
+  id string [pk, increment]
+  url text [not null, note: "max-length: 2000"]
   title string [not null, note: "max-length: 50"]
   description text [note: "max-length: 150"]
   ogp_url string

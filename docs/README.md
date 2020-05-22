@@ -1,2 +1,6 @@
 # database.dbml
-view on https://dbdiagram.io
+ER図。
+https://dbdiagram.io にコピペして見る。
+
+# tests/tests.md
+テスト設計書。
