@@ -1,0 +1,14 @@
+Project Larticle {
+  database_type: 'PostgreSQL'
+}
+
+Table articles {
+  id string [pk, note: "uuidで12文字"]
+  url string [not null, note: "max-length: 2000"]
+  title string [not null, note: "max-length: 50"]
+  description text [note: "max-length: 150"]
+  ogp_url string
+  finish_reading_at timestamp [note: '記事を読み終えた日時']
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
