@@ -1,0 +1,13 @@
+// Fix footer to bottom.
+ body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+footer.footer {
+  margin-top: auto;
+  // Customize padding.
+  @extend .pt-5 !optional;
+  @extend .pb-5 !optional;
+}

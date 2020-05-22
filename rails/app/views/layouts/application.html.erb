@@ -4,12 +4,24 @@
     <title>App</title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <!-- <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script> -->
   </head>
 
   <body>
+    <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <p class="navbar-item title">Learticle</p>
+      </div>
+    </nav>
+
     <%= yield %>
+
+    <footer class="footer has-text-centered">
+      Learticle by <%= link_to "at", "https://twitter.com/at_946" %>.
+    </footer>
   </body>
 </html>

@@ -1,0 +1,45 @@
+<section class="section">
+  <div class="container">
+    <div class="tabs is-centered is-boxed">
+      <ul>
+        <li class="is-active">
+          <a>
+            <span class="icon is-small"><i class="far fa-bookmark"></i></span>
+            <span>あとで読む</span>
+          </a>
+        </li>
+        <li>
+          <a>
+            <span class="icon is-small"><i class="fas fa-check"></i></span>
+            <span>読みました</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <%= form_with model: nil, class: "mb-3" do |form| %>
+      <div class="field">
+        <div class="control has-icons-left">
+          <input type="text" class="input" placeholder="URL" autofocus>
+          <span class="icon is-small is-left"><i class="fas fa-link"></i></span>
+        </div>
+      </div>
+      <div class="field">
+        <div class="control has-text-centered">
+          <button class="button is-primary is-outlined is-rounded">
+            <span class="icon"><i class="fas fa-plus-circle"></i></span>
+            <span>追加する</span>
+          </button>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="columns is-multiline">
+      <% 5.times do %>
+        <div class="column is-half-tablet is-one-third-desktop is-one-quarter-fullhd">
+          <%= render partial: "article_card" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>
