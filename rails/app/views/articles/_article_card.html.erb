@@ -1,4 +1,4 @@
-<div class="card">
+<div class="card article-card">
   <%= link_to article.url, target: "_blank" do %>
     <div class="card-image">
       <figure class="image is-2by1">
@@ -14,7 +14,7 @@
     </div>
   <% end %>
   <footer class="card-footer">
-    <%= link_to "読みました", nil, class: "card-footer-item has-background-primary has-text-white has-text-weight-bold" %>
-    <%= link_to "削除する", "#", class: "card-footer-item has-text-danger" %>
+    <%= link_to "Finish reading", nil, class: "card-footer-item has-background-primary has-text-white has-text-weight-bold" %>
+    <%= link_to "Delete", "#", class: "card-footer-item has-text-danger" %>
   </footer>
 </div>
