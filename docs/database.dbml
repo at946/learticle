@@ -5,10 +5,10 @@ Project Larticle {
 Table articles {
   id string [pk, increment]
   url text [not null, note: "max-length: 2000"]
-  title string [not null, note: "max-length: 50"]
-  description text [note: "max-length: 150"]
-  ogp_url string
-  finish_reading_at timestamp [note: '記事を読み終えた日時']
+  title string
+  description text
+  ogp_url text
+  // finish_reading_at timestamp [note: '記事を読み終えた日時']
   created_at timestamp [not null]
   updated_at timestamp [not null]
 }

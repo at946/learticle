@@ -52,3 +52,6 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 # active admin（管理画面）
 gem 'activeadmin'
+
+# Get OGP information.
+gem 'faraday'
