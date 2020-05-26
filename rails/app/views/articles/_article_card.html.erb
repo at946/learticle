@@ -1,7 +1,7 @@
 <div class="card article-card">
   <%= link_to article.url, target: "_blank" do %>
     <div class="card-image has-background-light">
-      <figure class="image is-2by1">
+      <figure class="image">
         <% if article.image_url.present? %>
           <%= image_tag article.image_url %>
         <% else %>
@@ -18,6 +18,6 @@
   <% end %>
   <footer class="card-footer">
     <%= link_to "Finish reading", nil, class: "card-footer-item has-background-primary has-text-white has-text-weight-bold" %>
-    <%= link_to "Delete", "#", class: "card-footer-item has-text-danger" %>
+    <%= link_to "Delete", delete_article_path(article), method: :delete, class: "card-footer-item has-text-danger card-delete-button", data: {confirm: "#{article.title}を削除しますか？"} %>
   </footer>
 </div>

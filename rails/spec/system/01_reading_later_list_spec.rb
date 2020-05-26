@@ -144,4 +144,40 @@ feature "Reading later list page", type: :system, js: true do
     expect(Article.count).to eq articles_count + 1
   end
 
+  scenario "【記事】の【削除】ボタンを選択した場合、【削除確認ダイアログ】が表示されること" do
+    visit articles_path
+
+    page.dismiss_confirm("#{@articles.first.title}を削除しますか？") do
+      all(".article-card")[0].find(".card-delete-button").click
+    end
+  end
+
+  scenario "【削除確認ダイアログ】で【キャンセル】を選択した場合、【記事】は削除されず【削除確認ダイアログ】が閉じること" do
+    visit articles_path
+    expect(all(".article-card")[0].find(".card-header-title")).to have_text @articles[0].title
+    articles_count = Article.count
+
+    page.dismiss_confirm do
+      all(".article-card")[0].find(".card-delete-button").click
+    end
+
+    expect(current_path).to eq articles_path
+    expect(all(".article-card")[0].find(".card-header-title")).to have_text @articles[0].title
+    expect(Article.count).to eq articles_count
+  end
+
+  scenario "【削除確認ダイアログ】で【OK】を選択した場合、【記事】が削除され【削除確認ダイアログ】が閉じること" do
+    visit articles_path
+    expect(all(".article-card")[0].find(".card-header-title")).to have_text @articles[0].title
+    articles_count = Article.count
+
+    page.accept_confirm do
+      all(".article-card")[0].find(".card-delete-button").click
+    end
+
+    expect(current_path).to eq articles_path
+    expect(all(".article-card")[0].find(".card-header-title")).to have_text @articles[1].title
+    expect(Article.count).to eq articles_count - 1
+  end
+
 end

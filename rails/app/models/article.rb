@@ -33,7 +33,7 @@ class Article < ApplicationRecord
       end
 
       # image_url
-      if (image_url = doc.xpath("//meta[@property='og:image']/@content").to_s).present?
+      if (image_url = doc.xpath("//meta[@property='og:image']/@content").first.to_s).present?
         self.image_url = image_url 
       end
     end
