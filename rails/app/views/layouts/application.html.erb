@@ -8,13 +8,23 @@
 
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
-    <!-- <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script> -->
   </head>
 
   <body>
     <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <p class="navbar-item title">Learticle</p>
+      </div>
+      <div class="navbar-menu">
+        <div class="navbar-end">
+          <div class="navbar-item">
+            <% if logged_in? %>
+              <%= link_to "Logout", auth0_logout_path, method: :delete, id: :logout_button, class: "button is-primary" %>
+            <% else %>
+              <%= link_to "Login", "auth/auth0", method: :post, id: :login_button, class: "button is-primary has-text-weight-bold" %>
+            <% end %>
+          </div>
+        </div>
       </div>
     </nav>
 

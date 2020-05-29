@@ -5,10 +5,28 @@ Project Larticle {
 Table articles {
   id string [pk, increment]
   url text [not null, note: "max-length: 2000"]
-  title string
-  description text
-  ogp_url text
-  // finish_reading_at timestamp [note: '記事を読み終えた日時']
-  created_at timestamp [not null]
-  updated_at timestamp [not null]
+  title string [not null]
+  image_url text
+  created_at datetime [not null]
+  updated_at datetime [not null]
 }
+
+Table users {
+  uid string
+  name string
+  email string
+  nickname string
+  image string
+  Note: "auth0. https://github.com/auth0/omniauth-auth0#auth-hash"
+}
+
+Table user_article {
+  user_id string [not null]
+  article_id string [not null]
+  finish_reading_at datetime
+  created_at datetime [not null]
+  updated_at datetime [not null]
+}
+
+ref: user_article.article_id < articles.id
+ref: user_article.user_id < users.uid

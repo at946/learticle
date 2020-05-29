@@ -37,3 +37,6 @@
 
 # Ignore db data.
 /db
+
+# Ignore dotenv
+.env

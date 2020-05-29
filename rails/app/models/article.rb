@@ -3,7 +3,6 @@ class Article < ApplicationRecord
   before_save :set_ogp_info
 
   validates :url,
-    # presence: true,
     format: { with: /\A#{URI::regexp(%w(http https))}\z/, message: "に https:// または http:// から始まる文字列を入力してください" },
     length: { maximum: 2000 }
 

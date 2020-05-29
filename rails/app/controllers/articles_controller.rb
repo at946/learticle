@@ -1,4 +1,5 @@
 class ArticlesController < ApplicationController
+  before_action :redirect_unless_logged_in
   before_action :set_articles
 
   def index
@@ -7,6 +8,7 @@ class ArticlesController < ApplicationController
 
   def create
     @article = Article.new(article_params)
+    @article.uid = current_user["uid"]
     if @article.save
       redirect_to articles_path
     else
@@ -26,6 +28,6 @@ class ArticlesController < ApplicationController
     end
 
     def set_articles
-      @articles = Article.order(created_at: :desc)
+      @articles = Article.where(uid: current_user["uid"]).order(created_at: :desc)
     end
 end
