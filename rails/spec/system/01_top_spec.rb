@@ -11,13 +11,24 @@ feature "Top page", type: :system, js: true do
     end
   end
 
-  scenario "【ログイン】ボタンを選択した場合、【ログインページ】が表示されること" do
+  scenario "ヘッダーの【ログイン】ボタンを選択した場合、【ログインページ】が表示されること" do
     visit root_path
 
     login_button = find("#login_button")
     expect(login_button["href"]).to include "auth/auth0"
     expect(login_button["data-method"]).to eq "post"
     
+    login_button.click
+    expect(page).to have_current_path articles_path(type: :reading_later)
+  end
+
+  scenario "【ログイン】ボタンを選択した場合、【ログインページ】が表示されること" do
+    visit root_path
+
+    login_button = find("#landing_login_button")
+    expect(login_button["href"]).to include "auth/auth0"
+    expect(login_button["data-method"]).to eq "post"
+
     login_button.click
     expect(page).to have_current_path articles_path(type: :reading_later)
   end
