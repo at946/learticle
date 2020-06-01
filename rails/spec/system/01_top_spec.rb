@@ -1,13 +1,14 @@
 feature "Top page", type: :system, js: true do
   scenario "【ログイン前】に【/】にアクセスしようとした場合、【トップページ】が表示されること" do
     visit root_path
-    expect(current_path).to eq root_path
+    expect(page).to have_current_path root_path
   end
 
   scenario "【ログイン後】に【/】にアクセスしようとした場合、【あとで読むリストページ】にリダイレクトされること" do
-    login
-    visit root_path
-    expect(current_path).to eq articles_path
+    login do
+      visit root_path
+      expect(page).to have_current_path articles_path(type: :reading_later)
+    end
   end
 
   scenario "【ログイン】ボタンを選択した場合、【ログインページ】が表示されること" do
@@ -18,7 +19,7 @@ feature "Top page", type: :system, js: true do
     expect(login_button["data-method"]).to eq "post"
     
     login_button.click
-    expect(current_path).to eq articles_path
+    expect(page).to have_current_path articles_path(type: :reading_later)
   end
 
   scenario "【ログアウト】ボタンが表示されないこと" do

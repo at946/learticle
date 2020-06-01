@@ -1,5 +1,8 @@
 <div class="card article-card">
   <%= link_to article.url, target: "_blank" do %>
+    <header class="card-header">
+      <p class="card-header-title"><%= article.title %></p>
+    </header>
     <div class="card-image has-background-light">
       <figure class="image">
         <% if article.image_url.present? %>
@@ -9,15 +12,14 @@
         <% end %>
       </figure>
     </div>
-    <header class="card-header is-shadowless">
-      <p class="card-header-title"><%= article.title %></p>
-    </header>
-    <div class="card-content pt-1">
-      <p class="article-registered-at has-text-grey has-text-right is-size-7">Added to <%= article.created_at.strftime("%Y.%m.%d") %></p>
-    </div>
+    <% if memo_visible and article.memo.present? %>
+      <div class="card-content article-memo has-text-dark"><%= safe_join(article.memo.split("\n"), tag(:br)) %></div>
+    <% end %>
   <% end %>
   <footer class="card-footer">
-    <%= link_to "Finish reading", nil, class: "card-footer-item has-background-primary has-text-white has-text-weight-bold" %>
-    <%= link_to "Delete", delete_article_path(article), method: :delete, class: "card-footer-item has-text-danger card-delete-button", data: {confirm: "#{article.title}を削除しますか？"} %>
+    <% if params[:type] == "reading_later" %>
+      <%= link_to "読了！", edit_article_path(article), class: "finish-reading-button card-footer-item has-background-primary has-text-white has-text-weight-bold" %>
+      <%= link_to "削除", delete_article_path(article), method: :delete, class: "card-footer-item has-text-danger card-delete-button", data: {confirm: "#{article.title}を削除しますか？"} %>
+    <% end %>
   </footer>
 </div>

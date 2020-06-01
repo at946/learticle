@@ -1,0 +1,21 @@
+<%= form_with model: article, url: articles_path(type: params[:type]), local: true, class: "mb-3" do |form| %>
+  <%= render "error_message", article: article %>
+  <div class="field">
+    <div class="control has-icons-left">
+      <%= form.text_field :url, class: "input", placeholder: "URL", autofocus: true %>
+      <span class="icon is-small is-left"><i class="fas fa-link"></i></span>
+    </div>
+  </div>
+  <div class="field">
+    <div class="control has-text-centered">
+      <button type="submit" id="create_article_button" class="button is-primary is-outlined is-rounded">
+        <span class="icon"><i class="fas fa-plus-circle"></i></span>
+        <% if params[:type] == "reading_later" %>
+          <span>あとで読む！</span>
+        <% elsif params[:type] == "finish_reading" %>
+          <span>読了！</span>
+        <% end %>
+      </button>
+    </div>
+  </div>
+<% end %>

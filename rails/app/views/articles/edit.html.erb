@@ -1,0 +1,28 @@
+<section class="section">
+  <div class="container" style="max-width: 640px;">
+    <div class="level">
+      <div class="level-item" style="max-width: 640px;">
+        <%= render "article_card", article: @article, memo_visible: false %>
+      </div>
+    </div>
+    <%= form_with model: @article, url: update_article_path(@article), local: true, class: "mb-3" do |form| %>
+      <%= render "error_message", article: @article %>
+      <div class="field has-text-left">
+        <%= form.label :memo, class: "label" %>
+        <div class="control">
+          <%= form.text_area :memo, class: "textarea", autofocus: true %>
+        </div>
+      </div>
+      <div class="has-text-centered mt-3">
+        <button type="submit" id="finish_reading_button" class="button is-primary has-text-weight-bold mb-2">
+          <span class="icon">
+            <i class="fas fa-check"></i>
+          </span>
+          <span>読了！</span>
+        </button>
+        <br>
+        <%= link_to "キャンセル", articles_path(type: :reading_later), id: :cancel_link, class: "button is-white" %>
+      </div>
+    <% end %>
+  </div>
+</section>

@@ -4,6 +4,7 @@ ja:
     attributes:
       article:
         url: "URL"
+        memo: "メモ"
     errors:
       messages:
         record_invalid: 'バリデーションに失敗しました: %{errors}'

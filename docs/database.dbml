@@ -3,30 +3,21 @@ Project Larticle {
 }
 
 Table articles {
-  id string [pk, increment]
+  id integer [pk, increment]
+  uid string [not null]
   url text [not null, note: "max-length: 2000"]
   title string [not null]
   image_url text
-  created_at datetime [not null]
-  updated_at datetime [not null]
+  finish_reading_at datetime
+  memo text [note: "max-length: 1000"]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
 }
 
 Table users {
-  uid string
-  name string
-  email string
-  nickname string
-  image string
+  uid string [pk]
+  provider string
   Note: "auth0. https://github.com/auth0/omniauth-auth0#auth-hash"
 }
 
-Table user_article {
-  user_id string [not null]
-  article_id string [not null]
-  finish_reading_at datetime
-  created_at datetime [not null]
-  updated_at datetime [not null]
-}
-
-ref: user_article.article_id < articles.id
-ref: user_article.user_id < users.uid
+Ref: users.uid - articles.uid

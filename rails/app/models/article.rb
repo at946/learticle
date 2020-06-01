@@ -6,6 +6,9 @@ class Article < ApplicationRecord
     format: { with: /\A#{URI::regexp(%w(http https))}\z/, message: "に https:// または http:// から始まる文字列を入力してください" },
     length: { maximum: 2000 }
 
+  validates :memo,
+    length: {maximum: 1000}
+
   private
     def strip_all_space_from_url
       self.url.gsub!(/(^[[:space:]]+)|([[:space:]]+$)/, '')

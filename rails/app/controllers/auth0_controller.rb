@@ -1,7 +1,7 @@
 class Auth0Controller < ApplicationController
   def callback
     session[:userinfo] = request.env["omniauth.auth"].slice(:provider, :uid)
-    redirect_to articles_path
+    redirect_to articles_path(type: :reading_later)
   end
 
   def failure

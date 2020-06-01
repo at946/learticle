@@ -5,7 +5,7 @@ ActiveAdmin.register Article do
   #
   # Uncomment all parameters which should be permitted for assignment
   #
-  permit_params :url
+  permit_params :url, :finish_reading_at, :memo
   #
   # or
   #

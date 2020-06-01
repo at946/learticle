@@ -1,52 +1,12 @@
 <section class="section">
   <div class="container">
-    <div class="tabs is-centered is-boxed">
-      <ul>
-        <li class="is-active">
-          <a>
-            <span class="icon is-small"><i class="far fa-bookmark"></i></span>
-            <span>Read later</span>
-          </a>
-        </li>
-        <li>
-          <a>
-            <span class="icon is-small"><i class="fas fa-check"></i></span>
-            <span>Finish reading</span>
-          </a>
-        </li>
-      </ul>
-    </div>
-
-    <%= form_with model: @article, local: true, class: "mb-3" do |form| %>
-      <% if @article.errors.any? %>
-        <article id="error_message_area" class="message is-danger">
-          <ul class="message-body">
-            <% @article.errors.full_messages.each do |msg| %>
-              <li><%= msg %></li>
-            <% end %>
-          </ul>
-        </article>
-      <% end %>
-      <div class="field">
-        <div class="control has-icons-left">
-          <%= form.text_field :url, class: "input", placeholder: "URL", autofocus: true %>
-          <span class="icon is-small is-left"><i class="fas fa-link"></i></span>
-        </div>
-      </div>
-      <div class="field">
-        <div class="control has-text-centered">
-          <button type="submit" id="create_article_button" class="button is-primary is-outlined is-rounded">
-            <span class="icon"><i class="fas fa-plus-circle"></i></span>
-            <span>Add</span>
-          </button>
-        </div>
-      </div>
-    <% end %>
+    <%= render "tab" %>
+    <%= render "add_article_form", article: @article %>
 
     <div id="article_cards" class="columns is-multiline">
       <% @articles.each do |article| %>
-        <div class="column is-half-tablet is-one-third-desktop is-one-quarter-fullhd">
-          <%= render partial: "article_card", locals: {article: article} %>
+        <div class="column is-half-tablet is-one-third-desktop">
+          <%= render "article_card", article: article, memo_visible: true %>
         </div>
       <% end %>
     </div>

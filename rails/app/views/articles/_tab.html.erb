@@ -1,0 +1,16 @@
+<div class="tabs is-centered is-boxed">
+  <ul>
+    <li class=<%= "is-active" if params[:type] == "reading_later" %>>
+      <%= link_to articles_path(type: :reading_later), id: :reading_later_tab do %>
+        <span class="icon is-small"><i class="far fa-bookmark"></i></span>
+        <span>あとで読む</span>
+      <% end %>
+    </li>
+    <li class=<%= "is-active" if params[:type] == "finish_reading" %>>
+      <%= link_to articles_path(type: :finish_reading), id: :finish_reading_tab do %>
+        <span class="icon is-small"><i class="fas fa-check"></i></span>
+        <span>読了</span>
+      <% end %>
+    </li>
+  </ul>
+</div>
