@@ -117,6 +117,15 @@ feature "Reading later list page", type: :system, js: true do
     end
   end
 
+  scenario "あとで読む記事の数が表示されること" do
+    @users.each do |user|
+      login(uid: user[:uid]) do
+        visit articles_path(type: :reading_later)
+        expect(page).to have_text "あとで読む記事数：#{user[:reading_later_articles].count}"
+      end
+    end
+  end
+
   ### URL登録
   scenario "【URL】が未入力の状態で【あとで読む】ボタンを選択した場合、Articleモデルは作成されず【あとで読むリストページ】で【URL未入力】のエラーメッセージが表示されること" do
     articles_count = Article.count

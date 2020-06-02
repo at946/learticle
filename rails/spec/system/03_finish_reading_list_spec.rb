@@ -121,6 +121,15 @@ feature "Finish reading list page", type: :system, js: true do
     end
   end
 
+  scenario "読了記事の数が表示されること" do
+    @users.each do |user|
+      login(uid: user[:uid]) do
+        visit articles_path(type: :finish_reading)
+        expect(page).to have_text "読了記事数：#{user[:finish_reading_articles].count}"
+      end
+    end
+  end
+
   # 読了登録
   scenario "【記事】の【読了！】ボタンが存在しないこと" do
     login(uid: @user1[:uid]) do

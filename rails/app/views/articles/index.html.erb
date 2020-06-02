@@ -1,7 +1,11 @@
 <section class="section">
   <div class="container">
     <%= render "tab" %>
-    <%= render "add_article_form", article: @article %>
+    <%= render "add_article_form", article: @article if params[:type] == "reading_later" %>
+    
+    <p class="has-text-right">
+      <%= params[:type] == "finish_reading" ? "読了記事数" : "あとで読む記事数"  %>：<span class="is-size-3 has-text-primary has-text-weight-bold"><%= @articles.count %></span>
+    </p>
 
     <div id="article_cards" class="columns is-multiline">
       <% @articles.each do |article| %>

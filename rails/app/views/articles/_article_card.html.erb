@@ -12,9 +12,9 @@
         <% end %>
       </figure>
     </div>
-    <% if memo_visible and article.memo.present? %>
-      <div class="card-content article-memo has-text-dark"><%= safe_join(article.memo.split("\n"), tag(:br)) %></div>
-    <% end %>
+  <% end %>
+  <% if memo_visible and article.memo.present? %>
+    <div class="card-content article-memo has-text-dark"><%= safe_join(article.memo.split("\n"), tag(:br)) %></div>
   <% end %>
   <footer class="card-footer">
     <% case params[:type] %>
