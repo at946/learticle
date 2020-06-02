@@ -18,15 +18,23 @@ class ArticlesController < ApplicationController
   end
 
   def edit
-    redirect_to articles_path(type: :reading_later) if @article.uid != current_user["uid"] or @article.finish_reading_at.present?
+    redirect_to articles_path(type: :reading_later) if @article.uid != current_user["uid"]
   end
 
   def update
     redirect_to articles_path(type: :reading_later) if @article.uid != current_user["uid"]
+
+    redirect_link_type = :finish_reading
     @article.assign_attributes(finish_reading_params)
-    @article.finish_reading_at = Time.now
+    
+    # あとで読むリストの記事だった場合
+    if @article.finish_reading_at.blank?
+      @article.finish_reading_at = Time.now
+      redirect_link_type = :reading_later
+    end
+
     if @article.save
-      redirect_to articles_path(type: :reading_later)
+      redirect_to articles_path(type: redirect_link_type)
     else
       render :edit
     end

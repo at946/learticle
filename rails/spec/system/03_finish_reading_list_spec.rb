@@ -125,8 +125,18 @@ feature "Finish reading list page", type: :system, js: true do
   scenario "【記事】の【読了！】ボタンが存在しないこと" do
     login(uid: @user1[:uid]) do
       visit articles_path(type: :finish_reading)
-      target = find("#article_cards").all(".article-card")[0]
-      expect(target).not_to have_selector ".finish-reading-button"
+      find("#article_cards").all(".article-card").each do |article_card|
+        expect(article_card).not_to have_selector ".finish-reading-button"
+      end
+    end
+  end
+
+  ### コメント編集
+  scenario "【記事】の【メモ編集】ボタンを選択した場合、【記事編集ページ】に遷移すること" do
+    login(uid: @user1[:uid]) do
+      visit articles_path(type: :finish_reading)
+      find("#article_cards").all(".article-card")[0].find(".edit-memo-button").click
+      expect(page).to have_current_path edit_article_path(@user1[:finish_reading_articles][0])
     end
   end
 

@@ -211,12 +211,22 @@ feature "Reading later list page", type: :system, js: true do
   end
 
   ### 読了登録
-  scenario "【記事】の【読了！】ボタンを選択した場合、【読了登録ページ】へ遷移すること" do
+  scenario "【記事】の【読了！】ボタンを選択した場合、【記事編集ページ】へ遷移すること" do
     login(uid: @user1[:uid]) do
       visit articles_path(type: :reading_later)
       article = find("#article_cards").all(".article-card")[0]
       article.find(".finish-reading-button").click
       expect(page).to have_current_path edit_article_path(@user1[:reading_later_articles][0])
+    end
+  end
+
+  ### コメント編集
+  scenario  "【記事】の【メモ編集】ボタンが存在しないこと" do
+    login(uid: @user1[:uid]) do
+      visit articles_path(type: :reading_later)
+      find("#article_cards").all(".article-card").each do |article_card|
+        expect(article_card).not_to have_selector ".edit-memo-button"
+      end
     end
   end
 

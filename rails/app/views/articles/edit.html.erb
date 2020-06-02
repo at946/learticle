@@ -14,14 +14,15 @@
         </div>
       </div>
       <div class="has-text-centered mt-3">
-        <button type="submit" id="finish_reading_button" class="button is-primary has-text-weight-bold mb-2">
+        <button type="submit" id="update_article_button" class="button is-primary has-text-weight-bold mb-2">
           <span class="icon">
             <i class="fas fa-check"></i>
           </span>
-          <span>読了！</span>
+          <span>登録！</span>
         </button>
         <br>
-        <%= link_to "キャンセル", articles_path(type: :reading_later), id: :cancel_link, class: "button is-white" %>
+        <% back_link = @article.finish_reading_at.present? ? articles_path(type: :finish_reading) : articles_path(type: :reading_later) %>
+        <%= link_to "キャンセル", back_link, id: :cancel_link, class: "button is-white" %>
       </div>
     <% end %>
   </div>

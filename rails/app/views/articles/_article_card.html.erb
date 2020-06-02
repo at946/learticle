@@ -17,9 +17,12 @@
     <% end %>
   <% end %>
   <footer class="card-footer">
-    <% if params[:type] == "reading_later" %>
+    <% case params[:type] %>
+    <% when "reading_later" %>
       <%= link_to "読了！", edit_article_path(article), class: "finish-reading-button card-footer-item has-background-primary has-text-white has-text-weight-bold" %>
       <%= link_to "削除", delete_article_path(article), method: :delete, class: "card-footer-item has-text-danger card-delete-button", data: {confirm: "#{article.title}を削除しますか？"} %>
+    <% when "finish_reading" %>
+      <%= link_to "メモ編集", edit_article_path(article), class: "edit-memo-button card-footer-item" %>
     <% end %>
   </footer>
 </div>
