@@ -38,4 +38,23 @@ feature "Top page", type: :system, js: true do
     expect(page).not_to have_selector "#logout_button"
   end
 
+  ### ページ遷移
+  scenario "【ヘッダー】の【ロゴ】を選択した場合、【トップページ】が表示されること" do
+    visit root_path
+    click_on :logo
+    expect(page).to have_current_path root_path
+  end
+
+  scenario "【フッター】の【利用規約】リンクを選択した場合、【利用ページ】が表示されること" do
+    visit root_path
+    click_on :tos_link
+    expect(page).to have_current_path tos_path
+  end
+
+  scenario "【フッター】の【プライバシーポリシー】リンクを選択した場合、【プライバシーポリシーページ】が表示されること" do
+    visit root_path
+    click_on :pp_link
+    expect(page).to have_current_path pp_path
+  end
+
 end

@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
-  root to: 'statics#home'
+  root to: 'statics#top'
+  # statics routes
+  get "/terms_of_service",  to: "statics#tos",  as: :tos
+  get "/privacy_policy",    to: "statics#pp",   as: :pp
 
   # Auth0 routes
   get     "/auth/auth0/callback", to: "auth0#callback", as: :auth0_callback

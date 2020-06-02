@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>App</title>
+    <title>Learticle</title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -13,7 +13,7 @@
   <body>
     <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
-        <p class="navbar-item title">Learticle</p>
+        <%= link_to "Learticle", logged_in? ? articles_path(type: :reading_later) : root_path, id: :logo, class: "navbar-item title" %>
       </div>
       <div class="navbar-menu">
         <div class="navbar-end">
@@ -31,7 +31,12 @@
     <%= yield %>
 
     <footer class="footer has-text-centered">
-      Learticle by <%= link_to "at", "https://twitter.com/at_946" %>.
+      <div class="mb-1">
+        <%= link_to_unless_current "利用規約", tos_path, id: :tos_link %>
+        <span> | </span>
+        <%= link_to_unless_current "プライバシーポリシー", pp_path, id: :pp_link %>
+      </div>
+      <p>Learticle by <%= link_to "at", "https://twitter.com/at_946" %>.</p>
     </footer>
   </body>
 </html>

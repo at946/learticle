@@ -33,6 +33,30 @@ feature "Finish reading list page", type: :system, js: true do
   end
 
   # ページ遷移
+  scenario "【ヘッダー】の【ロゴ】を選択した場合、【あとで読むリストページ】が表示されること" do
+    login do
+      visit articles_path(type: :finish_reading)
+      click_on :logo
+      expect(page).to have_current_path articles_path(type: :reading_later)
+    end
+  end
+
+  scenario "【フッター】の【利用規約】リンクを選択した場合、【利用規約ページ】が表示されること" do
+    login do
+      visit articles_path(type: :finish_reading)
+      click_on :tos_link
+      expect(page).to have_current_path tos_path
+    end
+  end
+
+  scenario "【フッター】の【プライバシーポリシー】リンクを選択した場合、【プライバシーポリシーページ】が表示されること" do
+    login do
+      visit articles_path(type: :finish_reading)
+      click_on :pp_link
+      expect(page).to have_current_path pp_path
+    end
+  end
+
   scenario "【あとで読む】タブを選択した場合、【あとで読むリストページ】へ遷移すること" do
     login(uid: @user1[:uid]) do
       visit articles_path(type: :finish_reading)
