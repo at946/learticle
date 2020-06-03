@@ -1,7 +1,8 @@
 <section class="hero is-medium is-primary">
   <div class="hero-body">
     <div class="container has-text-centered">
-      <h1 class="title is-size-1">Learn + Article = <span class="has-text-warning">Learticle</span></h1>
+      <%= image_tag "logo.svg" %>
+      <h1 class="title has-text-warning">Learn + Article</h1>
     </div>
   </div>
 </section>
@@ -14,10 +15,12 @@
         <div class="card is-shadowless">
           <div>
             <i class="far fa-bookmark is-size-1 has-text-danger mb-3"></i>
-            <p class="has-text-weight-bold mb-1">
+            <p class="has-text-weight-bold has-text-primary is-size-5 mb-2">あとで読むリスト</p>
+            <p class="has-text-weight-medium">
               Web記事との出会いは一期一会。<br>
-              スキマ時間に出会った記事は<br>『<span class="has-text-primary">あとで読むリスト</span>』に登録して、<br>
-              時間のあるときにゆっくり読みましょう！
+              スキマ時間に見つけた記事は<br>
+              さくっと登録しておいて、<br>
+              時間のあるときにゆっくり読もう！
             </p>
           </div>
         </div>
@@ -26,9 +29,11 @@
         <div class="card is-shadowless">
           <div class="card-conten">
             <i class="fas fa-check is-size-1 has-text-danger mb-3"></i>
-            <p class="has-text-weight-bold mb-1">
-              読み終わった記事は『<span class="has-text-primary">読了リスト</span>』で管理。<br>
-              メモを残しておけば見返すときにも便利！
+            <p class="has-text-weight-bold has-text-primary is-size-5 mb-2">読了リスト</p>
+            <p class="has-text-weight-medium">
+              読み終わった記事も読了リストでしっかり管理。<br>
+              あとで読み返すことも簡単にできます。<br>
+              読んだ量はモチベーションにもつながります！
             </p>
           </div>
         </div>
@@ -37,17 +42,19 @@
         <div class="card is-shadowless">
           <div class="card-conten">
             <i class="fas fa-share-alt is-size-1 has-text-danger mb-3"></i>
-            <p class="has-text-weight-bold mb-1">
-              記事とメモは<span class="has-text-primary">SNSにシェア</span>できます！<br>
-              学びをアウトプットして定着させましょう。<br>
-              誰かのインプットになればさらに素敵。
+            <p class="has-text-weight-bold has-text-primary is-size-5 mb-2">メモとシェア</p>
+            <p class="has-text-weight-medium">
+              読み終わった記事にはメモを残せます！<br>
+              記事とメモはパパッとSNSにシェア。<br>
+              アウトプットすることで学びがもっと定着するし、<br>
+              誰かのインプットになったら素敵です！
             </p>
           </div>
         </div>
       </div>
     </div>
     <%= link_to "auth/auth0", method: :post, id: :landing_login_button, class: "button is-primary has-text-weight-bold is-medium is-rounded mb-2" do %>
-      <span class="icon mr-1"><%= image_tag "logo_white.svg" %></span>
+      <span class="icon mr-1"><%= image_tag "surfing.svg" %></span>
       <span>Login</span>
     <% end %>
   </div>

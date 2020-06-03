@@ -34,6 +34,7 @@
 /rails/yarn-error.log
 /rails/yarn-debug.log*
 /rails/.yarn-integrity
+/rails/.bash_history
 
 # Ignore db data.
 /db

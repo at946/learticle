@@ -1,10 +1,23 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Learticle</title>
+    <% if Rails.env.production? %>
+      <!-- Global site tag (gtag.js) - Google Analytics -->
+      <script async src="https://www.googletagmanager.com/gtag/js?id=UA-168412277-1"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-168412277-1');
+      </script>
+    <% end %>
+
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <%= display_meta_tags(default_meta_tags) %>
+    <%= render 'application/favicon' %>
 
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
@@ -13,7 +26,9 @@
   <body>
     <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
-        <%= link_to "Learticle", logged_in? ? articles_path(type: :reading_later) : root_path, id: :logo, class: "navbar-item title" %>
+        <%= link_to logged_in? ? articles_path(type: :reading_later) : root_path, id: :logo, class: "navbar-item title" do %>
+          <% image_tag "logo.svg" %>
+        <% end %>
       </div>
       <div class="navbar-menu">
         <div class="navbar-end">
