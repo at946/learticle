@@ -173,6 +173,28 @@ feature "Finish reading list page", type: :system, js: true do
     end
   end
 
+  ### SNSシェア
+  scenario "【記事】の【Tweet】ボタンを選択した場合、【ツイートページ】に遷移すること" do
+    login(uid: @user1[:uid]) do
+      visit articles_path(type: :finish_reading)
+      @user1[:finish_reading_articles].each_with_index do |article, i|
+        tweet_button = find("#article_cards").all(".article-card")[i].find("a.article-tweet-button")
+        tweet_url = CGI.unescape(tweet_button[:href])
+        expect(tweet_button[:href]).to include "https://twitter.com/intent/tweet"
+        # 【ツイートページ】の【テキストエリア】に【選択した記事】の【メモ】が入力されていること
+        if article.memo.present?
+          expect(tweet_url).to include article.memo
+        else
+          expect(tweet_url).to include "読みました！"
+        end
+        # 【ツイートページ】の【テキストエリア】に【選択した記事】の【URL】が入力されていること
+        expect(tweet_url).to include article.url
+        # 【ツイートページ】の【テキストエリア】に【#Learticle】のハッシュタグが入力されていること
+        expect(tweet_url).to include "#Learticle"
+      end
+    end
+  end
+
   # 記事削除
   scenario "【記事】の【削除】ボタンが存在しないこと" do
     login(uid: @user1[:uid]) do

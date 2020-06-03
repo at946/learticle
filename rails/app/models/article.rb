@@ -7,7 +7,7 @@ class Article < ApplicationRecord
     length: { maximum: 2000 }
 
   validates :memo,
-    length: {maximum: 1000}
+    length: { maximum: 1000 }
 
   private
     def strip_all_space_from_url

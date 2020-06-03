@@ -23,6 +23,11 @@
       <%= link_to "削除", delete_article_path(article), method: :delete, class: "card-footer-item has-text-danger card-delete-button", data: {confirm: "#{article.title}を削除しますか？"} %>
     <% when "finish_reading" %>
       <%= link_to "メモ編集", edit_article_path(article), class: "edit-memo-button card-footer-item" %>
+      <% tweet_text = article.memo.present? ? "#{article.memo}" : "読みました！" %>
+      <% tweet_text += "\n\n#Learticle\n" %>
+      <%= link_to "https://twitter.com/intent/tweet?text=#{CGI.escape(tweet_text)}&url=#{CGI.escape(article.url)}", class: "article-tweet-button card-footer-item has-text-white", style: "background-color: #1DA1F2;", target: "_blank" do %>
+        <i class="fab fa-twitter"></i>
+      <% end %>
     <% end %>
   </footer>
 </div>

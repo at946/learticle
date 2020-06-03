@@ -263,6 +263,16 @@ feature "Reading later list page", type: :system, js: true do
     end
   end
 
+  ### SNSシェア
+  scenario "【記事】の【Tweet】ボタンが存在しないこと" do
+    login(uid: @user1[:uid]) do
+      visit articles_path(type: :reading_later)
+      find("#article_cards").all(".article-card").each do |article_card|
+        expect(article_card).not_to have_selector ".article-tweet-button"
+      end
+    end
+  end
+
   ### 記事削除
   scenario "【記事】の【削除】ボタンを選択した場合、【削除確認ダイアログ】が表示されること" do
     login(uid: @user1[:uid]) do
