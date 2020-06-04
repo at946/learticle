@@ -5,40 +5,37 @@
 #   git config --global core.excludesfile '~/.gitignore_global'
 
 # Ignore bundler config.
-/rails/.bundle
+.bundle
 
 # Ignore all logfiles and tempfiles.
-/rails/log/*
-/rails/tmp/*
+/log/*
+/tmp/*
 !/log/.keep
 !/tmp/.keep
 
 # Ignore pidfiles, but keep the directory.
-/rails/tmp/pids/*
+/tmp/pids/*
 !/tmp/pids/
 !/tmp/pids/.keep
 
 # Ignore uploaded files in development.
-/rails/storage/*
+/storage/*
 !/storage/.keep
 
-/rails/public/assets
-/rails/.byebug_history
+/public/assets
+.byebug_history
 
 # Ignore master key for decrypting credentials and more.
-/rails/config/master.key
+/config/master.key
 
-/rails/public/packs
-/rails/public/packs-test
-/rails/node_modules
-/rails/yarn-error.log
-/rails/yarn-debug.log*
-/rails/.yarn-integrity
-/rails/.bash_history
-/rails/.browserslistrc
-
-# Ignore db data.
-/db
+/public/packs
+/public/packs-test
+/node_modules
+/yarn-error.log
+/yarn-debug.log*
+/.yarn-integrity
+/.bash_history
+/.browserslistrc
 
 # Ignore dotenv
 .env

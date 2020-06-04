@@ -1,26 +1,24 @@
-# Download
-```
-$ git clone https://github.com/at946/learticle
-```
+# README
 
-# Build
-```
-$ cd learticle
-$ docker-compose build
-```
+This README would normally document whatever steps are necessary to get the
+application up and running.
 
-# Create & migrate DB
-```
-$ docker-compose run web rails db:create
-$ docker-compose run web rails db:migrate
-```
+Things you may want to cover:
 
-# Start app
-```
-$ docker-compose up -d
-```
+* Ruby version
 
-# Stop app
-```
-$ docker-compose down
-```
+* System dependencies
+
+* Configuration
+
+* Database creation
+
+* Database initialization
+
+* How to run the test suite
+
+* Services (job queues, cache servers, search engines, etc.)
+
+* Deployment instructions
+
+* ...

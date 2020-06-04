@@ -14,15 +14,15 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
                    nodejs \
                    yarn
 
-COPY ./rails/Gemfile      ${HOME}
-COPY ./rails/Gemfile.lock ${HOME}
-COPY ./rails/package.json ${HOME}
-COPY ./rails/yarn.lock    ${HOME}
+COPY Gemfile      ${HOME}
+COPY Gemfile.lock ${HOME}
+COPY package.json ${HOME}
+COPY yarn.lock    ${HOME}
 
 RUN bundle install -j4 && \
     yarn install
 
-COPY ./rails/ ${HOME}
+COPY . ${HOME}
 
 EXPOSE 3000
 CMD ["rails", "server", "-b", "0.0.0.0"]
