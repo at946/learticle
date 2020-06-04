@@ -4,7 +4,8 @@ class Article < ApplicationRecord
 
   validates :url,
     format: { with: /\A#{URI::regexp(%w(http https))}\z/, message: "に https:// または http:// から始まる文字列を入力してください" },
-    length: { maximum: 2000 }
+    length: { maximum: 2000 },
+    uniqueness: { scope: :uid, message: "はすでに登録されています" }
 
   validates :memo,
     length: { maximum: 1000 }

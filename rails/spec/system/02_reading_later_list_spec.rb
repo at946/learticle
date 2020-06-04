@@ -167,59 +167,85 @@ feature "Reading later list page", type: :system, js: true do
 
   scenario "【URL】にURLフォーマット以外（http:// or https:// 以外）文字列を入力した状態で【あとで読む】ボタンを選択した場合、Articleモデルは作成されず【あとで読むリストページ】で【URLフォーマットエラー】のエラーメッセージが表示されること" do
     articles_count = Article.count
+    url = "ftp://bad_uri.com"
     login(uid: @user1[:uid]) do
       visit articles_path(type: :reading_later)
     
-      fill_in :article_url, with: "ftp://bad_uri.com"
+      fill_in :article_url, with: url
       click_on :create_article_button
 
       expect(page).to have_current_path articles_path(type: :reading_later)
       expect(page).to have_text "URLに https:// または http:// から始まる文字列を入力してください"
+      expect(find("#article_url").value).to eq url
       expect(Article.count).to eq articles_count
     end
   end
 
   scenario "【URL】に2001文字以上の文字列を入力した状態で【あとで読む】ボタンを選択した場合、Articleモデルは作成されず【あとで読むリストページ】で【URL文字数超過】のエラーメッセージが表示されること" do
     articles_count = Article.count
+    url = "https://" + "a" * 1993
     login(uid: @user1[:uid]) do
       visit articles_path(type: :reading_later)
 
-      fill_in :article_url, with: "https://" + "a" * 1993
+      fill_in :article_url, with: url
       click_on :create_article_button
     
       expect(page).to have_current_path articles_path(type: :reading_later)
       expect(page).to have_text "URLは2000文字以内で入力してください"
+      expect(find("#article_url").value).to eq url
       expect(Article.count).to eq articles_count
     end
   end
 
   scenario "【URL】に存在しないURLを入力した状態で【あとで読む】ボタンを選択した場合、Articleモデルは作成されず【あとで読むリストページ】で【存在しないページ】のエラーメッセージが表示されること" do
+    url = "http://a"
     articles_count = Article.count
     login(uid: @user1[:uid]) do
       visit articles_path(type: :reading_later)
 
-      fill_in :article_url, with: "http://a"
-      click_on :create_article_button
-
-      expect(page).to have_current_path articles_path(type: :reading_later)
-      expect(page).to have_text "URLのページは存在しないようです"
-      expect(Article.count).to eq articles_count
-    end
-  end
-
-  scenario "【URL】に登録したいURLを入力した状態で【あとで読む】ボタンを選択した場合、Articleモデルが作成され【あとで読むリストページ】の【あとで読むリスト】に登録したWeb記事が表示されること" do
-    url = "https://qiita.com/at-946/items/08de3c9d7611f62b1894"
-    login(uid: @user1[:uid]) do
-      visit articles_path(type: :reading_later)
-
-      articles_count = Article.count
       fill_in :article_url, with: url
       click_on :create_article_button
 
       expect(page).to have_current_path articles_path(type: :reading_later)
-      expect(page).not_to have_selector "#error_message_area"
-      expect(find("#article_cards").all(".article-card")[-1].all("a")[0][:href]).to eq url
-      expect(Article.count).to eq articles_count + 1
+      expect(page).to have_text "URLのページは存在しないようです"
+      expect(find("#article_url").value).to eq url
+      expect(Article.count).to eq articles_count
+    end
+  end
+
+  scenario "【URL】にすでにログインユーザーが登録しているURLを入力した状態で【あとで読む】ボタンを選択した場合、Articleモデルは作成されず【あとで読むリストページ】で【重複】のエラーメッセージが表示されること" do
+    articles_count = Article.count
+    [@user1[:reading_later_articles][0], @user1[:finish_reading_articles][0]].each do |article|
+      login(uid: @user1[:uid]) do
+        visit articles_path(type: :reading_later)
+
+        fill_in :article_url, with: article.url
+        click_on :create_article_button
+
+        expect(page).to have_current_path articles_path(type: :reading_later)
+        expect(page).to have_text "URLはすでに登録されています"
+        expect(find("#article_url").value).to eq article.url
+        expect(Article.count).to eq articles_count
+      end
+    end
+  end
+
+  scenario "【URL】に登録したいURLを入力した状態で【あとで読む】ボタンを選択した場合、Articleモデルが作成され【あとで読むリストページ】の【あとで読むリスト】に登録したWeb記事が表示されること" do
+    url = 
+    ["https://qiita.com/at-946/items/08de3c9d7611f62b1894", @user2[:reading_later_articles][1].url, @user2[:finish_reading_articles][0].url].each do |url|
+      login(uid: @user1[:uid]) do
+        visit articles_path(type: :reading_later)
+
+        articles_count = Article.count
+        fill_in :article_url, with: url
+        click_on :create_article_button
+
+        expect(page).to have_current_path articles_path(type: :reading_later)
+        expect(page).not_to have_selector "#error_message_area"
+        expect(find("#article_url").value).to eq ""
+        expect(find("#article_cards").all(".article-card")[-1].all("a")[0][:href]).to eq url
+        expect(Article.count).to eq articles_count + 1
+      end
     end
   end
 
@@ -234,6 +260,7 @@ feature "Reading later list page", type: :system, js: true do
 
       expect(page).to have_current_path articles_path(type: :reading_later)
       expect(page).not_to have_selector "#error_message_area"
+      expect(find("#article_url").value).to eq ""
     
       target_card = find("#article_cards").all(".article-card")[-1]
       expect(target_card.all("a")[0][:href]).to eq url
