@@ -4,7 +4,7 @@ ActiveAdmin.setup do |config|
   # Set the title that is displayed on the main layout
   # for each of the active admin pages.
   #
-  config.site_title = "App"
+  config.site_title = "Learticle"
 
   # Set the link url for the title. For example, to take
   # users to your main site. Defaults to no link.
@@ -24,7 +24,7 @@ ActiveAdmin.setup do |config|
   # will be added to.
   #
   # eg:
-  #   config.default_namespace = :hello_world
+    config.default_namespace = :kanri
   #
   # This will create resources in the HelloWorld module and
   # will namespace routes to /hello_world/*
@@ -54,7 +54,7 @@ ActiveAdmin.setup do |config|
   #
   # This setting changes the method which Active Admin calls
   # within the application controller.
-  # config.authentication_method = :authenticate_admin_user!
+  # config.authentiacation_method = :authenticate_admin_user!
 
   # == User Authorization
   #
@@ -151,6 +151,7 @@ ActiveAdmin.setup do |config|
   # Active Admin resources and pages from here.
   #
   # config.before_action :do_something_awesome
+  config.before_action :basic_auth
 
   # == Attribute Filters
   #
@@ -332,4 +333,11 @@ ActiveAdmin.setup do |config|
   # You can switch to using Webpacker here.
   #
   # config.use_webpacker = true
+
+  private
+  def basic_auth
+    authenticate_or_request_with_http_basic do |username, password|
+      username == ENV["ACTIVE_ADMIN_USERNAME"] && password == ENV["ACTIVE_ADMIN_PASSWORD"]
+    end
+  end
 end
