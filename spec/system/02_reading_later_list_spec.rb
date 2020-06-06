@@ -90,18 +90,6 @@ feature "Reading later list page", type: :system, js: true do
     end
   end
 
-  scenario "記事を選択した場合、記事編集ページに遷移しながら、その記事のサイトに別タブで遷移すること" do
-    login(uid: @user1[:uid]) do
-      article = @user1[:reading_later_articles][0]
-      visit articles_path(type: :reading_later)
-      find("#article_cards").all(".article-card").first.click
-      switch_to_window(windows.last)
-      expect(page).to have_current_path article.url
-      switch_to_window(windows.first)
-      expect(page).to have_current_path edit_article_path(article)
-    end
-  end
-
   scenario "ログインユーザーが読了した記事は表示されないこと" do
     @users.each do |user|
       login(uid: user[:uid]) do
