@@ -22,7 +22,7 @@
         </button>
         <br>
         <% back_link = @article.finish_reading_at.present? ? articles_path(type: :finish_reading) : articles_path(type: :reading_later) %>
-        <%= link_to "キャンセル", back_link, id: :cancel_link, class: "button is-white" %>
+        <%= link_to "戻る", back_link, id: :cancel_link, class: "button is-white" %>
       </div>
     <% end %>
   </div>
