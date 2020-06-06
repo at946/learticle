@@ -367,4 +367,34 @@ feature "Edit article page", type: :system, js: true do
     end
   end
 
+  ### SNSシェア
+  scenario "【Tweet】ボタンを選択した場合、【ツイートページ】に遷移すること" do
+    login(uid: @user1[:uid]) do
+      [@user1[:reading_later_articles][0], @user1[:finish_reading_articles][0]].each do |article|
+        ["感動大作\nおすすめ！", ""].each do |memo|
+          visit edit_article_path(article)
+          fill_in :article_memo, with: memo
+          click_on :tweet_button
+          switch_to_window(windows.last)
+          url = CGI.unescape(current_url)
+          expect(url).to include "https://twitter.com/intent/tweet"
+          # 【ツイートページ】の【テキストエリア】に【記事】の入力中の【メモ】が入力されていること
+          expect(url).not_to include article.to_s if article.memo.present?
+          if memo.present?
+            expect(url).to include memo
+            expect(url).not_to include "読みました！"
+          else
+            expect(url).to include "読みました！"
+          end
+          # 【ツイートページ】の【テキストエリア】に【記事】の【URL】が入力されていること
+          expect(url).to include article.url
+          # 【ツイートページ】の【テキストエリア】に【#Learticle】のハッシュタグが入力されていること
+          expect(url).to include "#Learticle"
+          current_window.close
+          switch_to_window(windows.first)
+        end
+      end
+    end
+  end
+
 end

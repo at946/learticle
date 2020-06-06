@@ -14,16 +14,34 @@
         </div>
       </div>
       <div class="has-text-centered mt-3">
-        <button type="submit" id="update_article_button" class="button is-primary has-text-weight-bold mb-2">
-          <span class="icon">
-            <i class="fas fa-check"></i>
-          </span>
-          <span>登録！</span>
-        </button>
-        <br>
+        <div class="buttons is-centered">
+          <button type="submit" id="update_article_button" class="button is-primary has-text-weight-bold mr-2">
+            <span class="icon">
+              <i class="fas fa-check"></i>
+            </span>
+            <span>登録！</span>
+          </button>
+          <button type="button" id="tweet_button" class="button has-text-white" style="background-color: #1DA1F2;" onClick="move_to_tweet();">
+            <span class="icon">
+              <i class="fab fa-twitter"></i>
+            </span>
+            <span>ツイート</span>
+          </button>
+        </div>
         <% back_link = @article.finish_reading_at.present? ? articles_path(type: :finish_reading) : articles_path(type: :reading_later) %>
         <%= link_to "戻る", back_link, id: :cancel_link, class: "button is-white" %>
       </div>
     <% end %>
   </div>
 </section>
+
+<script>
+  function move_to_tweet() {
+    var memo = document.getElementById("article_memo").value;
+    if (!memo) { memo = "読みました！"; }
+    text = encodeURIComponent(memo + "\n\n#Learticle");
+    const url = <%== JSON.dump(CGI.escape(@article.url)) %>;
+    const href = "https://twitter.com/intent/tweet?text=" + text + "&url=" + url;
+    window.open(href, "_blank");
+  }
+</script>
