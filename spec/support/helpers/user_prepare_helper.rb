@@ -1,26 +1,45 @@
 module UserPrepareHelper
   def user_prepare
-    # User1が登録した記事の準備
-    @user1 = {uid: "google-oauth2|123456789012345678901", reading_later_articles: [], finish_reading_articles: []}
-    # User1のあとで読む記事
-    @user1[:reading_later_articles].push(Article.create(url: "https://qiita.com/at-946/items/1e8acea19cc0b9f31b98", uid: @user1[:uid]))
-    @user1[:reading_later_articles].push(Article.create(url: "https://note.com/at946/n/n1fd654316f31", uid: @user1[:uid]))
-    @user1[:reading_later_articles].push(Article.create(url: "https://www.wantedly.com/users/128531805", uid: @user1[:uid]))
-    # User1の読了記事
-    @user1[:finish_reading_articles].prepend(Article.create(url: "https://qiita.com/at-946/items/ffc0ebcc4d08f958197b", uid: @user1[:uid], finish_reading_at: Time.now, memo: "面白かった！"))
-    @user1[:finish_reading_articles].prepend(Article.create(url: "https://note.com/at946/n/nd7e6141bd4c2", uid: @user1[:uid], finish_reading_at: Time.now))
+    # URLs for Articles
+    urls = [
+      "https://qiita.com/at-946/items/1e8acea19cc0b9f31b98",
+      "https://qiita.com/at-946/items/ffc0ebcc4d08f958197b",
+      "https://qiita.com/at-946/items/08de3c9d7611f62b1894",
+      "https://qiita.com/at-946/items/2fb75cec5355fad4050d",
+      "https://note.com/at946/n/n1fd654316f31",
+      "https://note.com/at946/n/nd7e6141bd4c2",
+      "https://note.com/at946/n/n0bb40f0857ef",
+      "https://note.com/at946/n/n6e43fe983211",
+      "https://note.com/at946/n/n61f6c4468e17",
+      "https://www.wantedly.com/users/128531805"
+    ]
 
-    #User2が登録した記事の準備
-    @user2 = {uid: "google-oauth2|111111111122222222223", reading_later_articles: [], finish_reading_articles: []}
-    # User2のあとで読む記事
-    @user2[:reading_later_articles].push(Article.create(url: "https://qiita.com/at-946/items/08de3c9d7611f62b1894", uid: @user2[:uid]))
-    @user2[:reading_later_articles].push(Article.create(url: "https://note.com/at946/n/n0bb40f0857ef", uid: @user2[:uid]))
-    # User2の読了記事
-    @user2[:finish_reading_articles].prepend(Article.create(url: "https://qiita.com/at-946/items/2fb75cec5355fad4050d", uid: @user2[:uid], finish_reading_at: Time.now))
-    @user2[:finish_reading_articles].prepend(Article.create(url: "https://note.com/at946/n/n6e43fe983211", uid: @user2[:uid], finish_reading_at: Time.now, memo: "ためになる。\nまた読みたい。"))
-    @user2[:finish_reading_articles].prepend(Article.create(url: "https://note.com/at946/n/n61f6c4468e17", uid: @user2[:uid], finish_reading_at: Time.now, memo: "あとでまとめてツイートするぞ！"))
+    # user1はあとで読む記事を３つ、読了記事を２つ登録している
+    @user1 = create(:user)
+    @user1_articles = {rl: [], fr: []}
+    3.times do
+      article = create(:article, url: urls.shift)
+      @user1_articles[:rl].append(create(:user_article, user_id: @user1.id, article_id: article.id))
+    end
+    2.times do
+      article = create(:article, url: urls.shift)
+      @user1_articles[:fr].prepend(create(:user_article, user_id: @user1.id, article_id: article.id, finish_reading_at: Time.now, memo: Faker::Hipster.sentence))
+    end
+
+    # user2はあとで読む記事を２つ、読了記事を３つ登録している
+    @user2 = create(:user)
+    @user2_articles = {rl: [], fr: []}
+    2.times do
+      article = create(:article, url: urls.shift)
+      @user2_articles[:rl].append(create(:user_article, user_id: @user2.id, article_id: article.id))
+    end
+    3.times do
+      article = create(:article, url: urls.shift)
+      @user2_articles[:fr].prepend(create(:user_article, user_id: @user2.id, article_id: article.id, finish_reading_at: Time.now, memo: Faker::Hipster.sentence))
+    end
 
     @users = [@user1, @user2]
+    @user_articles = [@user1_articles, @user2_articles]
   end
 
   RSpec.configure do |config|

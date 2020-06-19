@@ -1,11 +1,16 @@
 class Article < ApplicationRecord
+  # Associations
+  has_many :user_articles, dependent: :destroy
+  has_many :users, through: :user_articles
+
+
   before_validation :strip_all_space_from_url
   before_save :set_ogp_info
 
   validates :url,
     format: { with: /\A#{URI::regexp(%w(http https))}\z/, message: "に https:// または http:// から始まる文字列を入力してください" },
     length: { maximum: 2000 },
-    uniqueness: { scope: :uid, message: "はすでに登録されています" }
+    uniqueness: true
 
   validates :memo,
     length: { maximum: 1000 }

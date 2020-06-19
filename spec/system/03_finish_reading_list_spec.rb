@@ -10,7 +10,7 @@ feature "Finish reading list page", type: :system, js: true do
   end
 
   scenario "【ログイン後】に【/articles?type=finish_reading】にアクセスしようとした場合、【読了リストページ】が表示されること" do
-    login do
+    login(@users[0]) do
       visit articles_path(type: :finish_reading)
       expect(page).to have_current_path articles_path(type: :finish_reading)
     end
@@ -18,14 +18,14 @@ feature "Finish reading list page", type: :system, js: true do
 
   # ログイン・ログアウト
   scenario "【ログイン】ボタンが表示されないこと" do
-    login do
+    login(@users[0]) do
       visit articles_path(type: :finish_reading)
       expect(page).not_to have_selector "#login_button"
     end
   end
 
   scenario "【ログアウト】ボタンを選択した場合、【ログイン前】状態になり【トップページ】が表示されること" do
-    login(logout: false) do
+    login(@users[0], logout: false) do
       visit articles_path(type: :finish_reading)
       click_on :logout_button
       expect(page).to have_current_path root_path
@@ -34,7 +34,7 @@ feature "Finish reading list page", type: :system, js: true do
 
   # ページ遷移
   scenario "【ヘッダー】の【ロゴ】を選択した場合、【あとで読むリストページ】が表示されること" do
-    login do
+    login(@users[0]) do
       visit articles_path(type: :finish_reading)
       click_on :logo
       expect(page).to have_current_path articles_path(type: :reading_later)
@@ -42,7 +42,7 @@ feature "Finish reading list page", type: :system, js: true do
   end
 
   scenario "【フッター】の【利用規約】リンクを選択した場合、【利用規約ページ】が表示されること" do
-    login do
+    login(@users[0]) do
       visit articles_path(type: :finish_reading)
       click_on :tos_link
       expect(page).to have_current_path tos_path
@@ -50,7 +50,7 @@ feature "Finish reading list page", type: :system, js: true do
   end
 
   scenario "【フッター】の【プライバシーポリシー】リンクを選択した場合、【プライバシーポリシーページ】が表示されること" do
-    login do
+    login(@users[0]) do
       visit articles_path(type: :finish_reading)
       click_on :pp_link
       expect(page).to have_current_path pp_path
@@ -58,7 +58,7 @@ feature "Finish reading list page", type: :system, js: true do
   end
 
   scenario "【あとで読む】タブを選択した場合、【あとで読むリストページ】へ遷移すること" do
-    login(uid: @user1[:uid]) do
+    login(@users[0]) do
       visit articles_path(type: :finish_reading)
       click_on :reading_later_tab
       expect(page).to have_current_path articles_path(type: :reading_later)
@@ -67,27 +67,29 @@ feature "Finish reading list page", type: :system, js: true do
 
   # コンテンツ表示
   scenario "ログインユーザーが読了した記事が読了日時降順で表示されていること" do
-    @users.each do |user|
-      login(uid: user[:uid]) do
+    @users.each_with_index do |user, i|
+      login(user) do
         visit articles_path(type: :finish_reading)
         article_cards = find("#article_cards").all(".article-card")
 
-        expect(article_cards.count).to eq user[:finish_reading_articles].count
+        expect(article_cards.count).to eq @user_articles[i][:fr].count
 
-        user[:finish_reading_articles].each_with_index do |article, i|
+        @user_articles[i][:fr].each_with_index do |user_article, j|
+          article = user_article.article
+          article_card = article_cards[j]
           # 記事を選択した場合、そのWeb記事のサイトに別タブで遷移すること
-          expect(article_cards[i].all("a")[0][:href]).to eq user[:finish_reading_articles][i].url
-          expect(article_cards[i].all("a")[0][:target]).to eq "_blank"
+          expect(article_card.all("a")[0][:href]).to eq article.url
+          expect(article_card.all("a")[0][:target]).to eq "_blank"
           # 記事のOGP画像が表示されること
-          expect(article_cards[i].find(".card-image").find("img")[:src]).to eq user[:finish_reading_articles][i].image_url
+          expect(article_card.find(".card-image").find("img")[:src]).to eq article.image_url
           # 記事のタイトルが表示されること
-          expect(article_cards[i].find(".card-header-title")).to have_text user[:finish_reading_articles][i].title
+          expect(article_card.find(".card-header-title")).to have_text article.title
           # 記事のメモが登録されている場合、記事のメモが表示されること
           # 記事のメモが登録されていない場合、記事のメモが表示されないこと
-          if article.memo.present?
-            expect(article_cards[i].find(".article-memo")).to have_text user[:finish_reading_articles][i].memo
+          if user_article.memo.present?
+            expect(article_card.find(".article-memo")).to have_text user_article.memo
           else
-            expect(article_cards[i]).not_to have_selector ".article-memo"
+            expect(article_card).not_to have_selector ".article-memo"
           end
         end
       end
@@ -95,15 +97,13 @@ feature "Finish reading list page", type: :system, js: true do
   end
 
   scenario "ログインユーザーが後から読む記事は表示されないこと" do
-    @users.each do |user|
-      login(uid: user[:uid]) do
+    @users.each_with_index do |user, i|
+      login(user) do
         visit articles_path(type: :finish_reading)
         article_cards = find("#article_cards").all(".article-card")
 
-        user[:reading_later_articles].each do |article|
-          article_cards.each do |article_card|
-            expect(article_card.all("a")[0][:href]).not_to eq article.url
-          end
+        @user_articles[i][:rl].each do |user_article|
+          expect(page).not_to have_link nil, href: user_article.article.url
         end
       end
     end
@@ -111,15 +111,14 @@ feature "Finish reading list page", type: :system, js: true do
 
   scenario "ログインユーザー以外が読了した記事は表示されないこと" do
     @users.each do |user|
-      login(uid: user[:uid]) do
+      login(user) do
         visit articles_path(type: :finish_reading)
         article_cards = find("#article_cards").all(".article-card")
 
-        rest_users = @users.reject {|item| item == user}
-        rest_users.each do |rest_user|
-          rest_user[:finish_reading_articles].each do |article|
-            article_cards.each do |article_card|
-              expect(article_card.all("a")[0][:href]).not_to eq article.url
+        @users.each_with_index do |rest_user, i|
+          unless rest_user == user
+            @user_articles[i][:fr].each do |user_article|
+              expect(page).not_to have_link nil, href: user_article.article.url
             end
           end
         end
@@ -129,15 +128,14 @@ feature "Finish reading list page", type: :system, js: true do
 
   scenario "ログインユーザー以外が後から読む記事は表示されないこと" do
     @users.each do |user|
-      login(uid: user[:uid]) do
+      login(user) do
         visit articles_path(type: :finish_reading)
         article_cards = find("#article_cards").all(".article-card")
 
-        rest_users = @users.reject {|item| item == user}
-        rest_users.each do |rest_user|
-          rest_user[:reading_later_articles].each do |article|
-            article_cards.each do |article_card|
-              expect(article_card.all("a")[0][:href]).not_to eq article.url
+        @users.each_with_index do |rest_user, i|
+          unless rest_user == user
+            @user_articles[i][:rl].each do |user_article|
+              expect(page).not_to have_link nil, href: user_article.article.url
             end
           end
         end
@@ -146,17 +144,17 @@ feature "Finish reading list page", type: :system, js: true do
   end
 
   scenario "読了記事の数が表示されること" do
-    @users.each do |user|
-      login(uid: user[:uid]) do
+    @users.each_with_index do |user, i|
+      login(user) do
         visit articles_path(type: :finish_reading)
-        expect(page).to have_text "読了記事数：#{user[:finish_reading_articles].count}"
+        expect(page).to have_text "読了記事数：#{@user_articles[i][:fr].count}"
       end
     end
   end
 
   # 読了登録
   scenario "【記事】の【読了！】ボタンが存在しないこと" do
-    login(uid: @user1[:uid]) do
+    login(@users[0]) do
       visit articles_path(type: :finish_reading)
       find("#article_cards").all(".article-card").each do |article_card|
         expect(article_card).not_to have_selector ".finish-reading-button"
@@ -166,24 +164,25 @@ feature "Finish reading list page", type: :system, js: true do
 
   ### コメント編集
   scenario "【記事】の【メモ編集】ボタンを選択した場合、【記事編集ページ】に遷移すること" do
-    login(uid: @user1[:uid]) do
+    login(@users[0]) do
       visit articles_path(type: :finish_reading)
       find("#article_cards").all(".article-card")[0].find(".edit-memo-button").click
-      expect(page).to have_current_path edit_article_path(@user1[:finish_reading_articles][0])
+      expect(page).to have_current_path edit_article_path(@user_articles[0][:fr][0])
     end
   end
 
   ### SNSシェア
   scenario "【記事】の【Tweet】ボタンを選択した場合、【ツイートページ】に遷移すること" do
-    login(uid: @user1[:uid]) do
+    login(@users[0]) do
       visit articles_path(type: :finish_reading)
-      @user1[:finish_reading_articles].each_with_index do |article, i|
+      @user_articles[0][:fr].each_with_index do |user_article, i|
+        article = user_article.article
         tweet_button = find("#article_cards").all(".article-card")[i].find("a.article-tweet-button")
         tweet_url = CGI.unescape(tweet_button[:href])
         expect(tweet_button[:href]).to include "https://twitter.com/intent/tweet"
         # 【ツイートページ】の【テキストエリア】に【選択した記事】の【メモ】が入力されていること
-        if article.memo.present?
-          expect(tweet_url).to include article.memo
+        if user_article.memo.present?
+          expect(tweet_url).to include user_article.memo
         else
           expect(tweet_url).to include "読みました！"
         end
@@ -197,10 +196,19 @@ feature "Finish reading list page", type: :system, js: true do
 
   # 記事削除
   scenario "【記事】の【削除】ボタンが存在しないこと" do
-    login(uid: @user1[:uid]) do
+    login(@users[0]) do
       visit articles_path(type: :finish_reading)
       target = find("#article_cards").all(".article-card")[0]
       expect(target).not_to have_selector ".card-delete-button"
     end
   end
+
+  # ### 読了記録
+  # scenario "【読了数】を可視化する【Pixela】が表示されること" do
+  #   login(uid: @user1[:uid]) do
+  #     visit articles_path(type: :finish_reading)
+  #     iframe = find("#iframe_pixela")
+  #     expect(iframe[:src]).to eq "https://pixe.la/v1/users/learticle-dev/graphs/"
+  #   end
+  # end
 end

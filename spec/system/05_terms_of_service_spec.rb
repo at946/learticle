@@ -1,4 +1,8 @@
 feature "Terms of service page", type: :system, js: true do  
+  background do
+    @user = create(:user)
+  end
+
   ### アクセス
   scenario "【ログイン前】に【/terms_of_service】にアクセスしようとした場合、【利用規約ページ】が表示されること" do
     visit tos_path
@@ -6,7 +10,7 @@ feature "Terms of service page", type: :system, js: true do
   end
 
   scenario "【ログイン後】に【/terms_of_service】にアクセスしようとした場合、【利用規約ページ】が表示されること" do
-    login do
+    login(@user) do
       visit tos_path
       expect(page).to have_current_path tos_path
     end
@@ -30,14 +34,14 @@ feature "Terms of service page", type: :system, js: true do
   end
 
   scenario "【ログイン後】に【ヘッダー】に【ログイン】ボタンが表示されないこと" do
-    login do
+    login(@user) do
       visit tos_path
       expect(page).not_to have_selector "#login_button"
     end
   end
 
   scenario "【ログイン後】に【ヘッダー】の【ログアウト】ボタンを選択した場合、【ログイン前】状態になり【トップページ】が表示されること" do
-    login(logout: false) do
+    login(@user, logout: false) do
       visit tos_path
       click_on :logout_button
       expect(page).to have_current_path root_path
@@ -52,7 +56,7 @@ feature "Terms of service page", type: :system, js: true do
   end
 
   scenario "【ログイン後】に【ヘッダー】の【ロゴ】を選択した場合、【あとで読むページ】が表示されること" do
-    login do
+    login(@user) do
       visit tos_path
       click_on :logo
       expect(page).to have_current_path articles_path(type: :reading_later)
@@ -65,7 +69,7 @@ feature "Terms of service page", type: :system, js: true do
   end
 
   scenario "【ログイン後】に【フッター】の【利用規約】リンクを選択できないこと" do
-    login do
+    login(@user) do
       visit tos_path
       expect(page).not_to have_selector "a#tos_link"
     end
@@ -78,7 +82,7 @@ feature "Terms of service page", type: :system, js: true do
   end
 
   scenario "【ログイン後】に【フッター】の【プライバシーポリシー】リンクを選択した場合、【プライバシーポリシーページ】が表示されること" do
-    login do
+    login(@user) do
       visit tos_path
       click_on :pp_link
       expect(page).to have_current_path pp_path

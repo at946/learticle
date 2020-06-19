@@ -1,0 +1,13 @@
+.iframe-wrapper {
+  position: relative;
+  width: 100%;
+  padding-top: calc((135 / 720) * (100% - 16px) + 22px);
+
+  iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+}

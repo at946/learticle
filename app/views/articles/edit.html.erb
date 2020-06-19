@@ -2,11 +2,11 @@
   <div class="container" style="max-width: 640px;">
     <div class="level">
       <div class="level-item" style="max-width: 640px;">
-        <%= render "article_card", article: @article, memo_visible: false %>
+        <%= render "article_card", user_article: @user_article, article: @article, memo_visible: false %>
       </div>
     </div>
-    <%= form_with model: @article, url: update_article_path(@article), local: true, class: "mb-3" do |form| %>
-      <%= render "error_message", article: @article %>
+    <%= form_with model: @user_article, url: update_article_path(@user_article), local: true, class: "mb-3" do |form| %>
+      <%= render "error_message", model: @user_article %>
       <div class="field has-text-left">
         <%= form.label :memo, class: "label" %>
         <div class="control">
@@ -28,7 +28,7 @@
             <span>ツイート</span>
           </button>
         </div>
-        <% back_link = @article.finish_reading_at.present? ? articles_path(type: :finish_reading) : articles_path(type: :reading_later) %>
+        <% back_link = @user_article.finish_reading_at.present? ? articles_path(type: :finish_reading) : articles_path(type: :reading_later) %>
         <%= link_to "戻る", back_link, id: :cancel_link, class: "button is-white" %>
       </div>
     <% end %>
@@ -37,7 +37,7 @@
 
 <script>
   function move_to_tweet() {
-    var memo = document.getElementById("article_memo").value;
+    var memo = document.getElementById("user_article_memo").value;
     if (!memo) { memo = "読みました！"; }
     text = encodeURIComponent(memo + "\n\n#Learticle");
     const url = <%== JSON.dump(CGI.escape(@article.url)) %>;

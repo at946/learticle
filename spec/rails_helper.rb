@@ -41,7 +41,7 @@ Capybara.register_driver :remote_chrome do |app|
         "no-sandbox",
         "headless",
         "disable-gpu",
-        "window-size=375,812"
+        "window-size=1000,600"
       ]
     }
   )
@@ -65,6 +65,12 @@ RSpec.configure do |config|
   config.before(:all) do
     FileUtils.rm_rf(Rails.root.join('tmp', 'screenshots'), secure: true)
   end
+
+  # Factory Bot
+  config.include FactoryBot::Syntax::Methods
+
+  # --only-failuresの準備
+  config.example_status_persistence_file_path = "spec/examples.txt"
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"

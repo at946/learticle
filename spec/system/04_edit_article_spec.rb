@@ -5,27 +5,27 @@ feature "Edit article page", type: :system, js: true do
 
   # アクセス
   scenario "【ログイン前】に【/articles/:id/edit】にアクセスしようとした場合、【トップページ】にリダイレクトすること" do
-    visit edit_article_path(@user1[:reading_later_articles].first)
+    visit edit_article_path(@user_articles[0][:rl][0])
     expect(page).to have_current_path root_path
   end
 
   scenario "【ログイン後】に【ログインユーザーのあとで読む記事】に対して【/articles/:id/edit】にアクセスしようとした場合、【記事編集ページ】が表示されること" do
-    @users.each do |user|
-      login(uid: user[:uid]) do
-        user[:reading_later_articles].each do |article|
-          visit edit_article_path(article)
-          expect(page).to have_current_path edit_article_path(article)
+    @users.each_with_index do |user, i|
+      login(user) do
+        @user_articles[i][:rl].each do |user_article|
+          visit edit_article_path(user_article)
+          expect(page).to have_current_path edit_article_path(user_article)
         end
       end
     end
   end
 
   scenario "【ログイン後】に【ログインユーザーの読了記事】に対して【/articles/:id/edit】にアクセスしようとした場合、【記事編集ページ】が表示されること" do
-    @users.each do |user|
-      login(uid: user[:uid]) do
-        user[:finish_reading_articles].each do |article|
-          visit edit_article_path(article)
-          expect(page).to have_current_path edit_article_path(article)
+    @users.each_with_index do |user, i|
+      login(user) do
+        @user_articles[i][:fr].each do |user_article|
+          visit edit_article_path(user_article)
+          expect(page).to have_current_path edit_article_path(user_article)
         end
       end
     end
@@ -33,12 +33,13 @@ feature "Edit article page", type: :system, js: true do
 
   scenario "【ログイン後】に【ログインユーザー以外のあとで読む記事】に対して【/articles/:id/edit】にアクセスしようとした場合、【あとで読むリストページ】にリダイレクトすること" do
     @users.each do |user|
-      login(uid: user[:uid]) do
-        rest_users = @users.reject {|item| item == user}
-        rest_users.each do |rest_user|
-          rest_user[:reading_later_articles].each do |article|
-            visit edit_article_path(article)
-            expect(page).to have_current_path articles_path(type: :reading_later)
+      login(user) do
+        @users.each_with_index do |rest_user, i|
+          unless rest_user == user
+            @user_articles[i][:rl].each do |user_article|
+              visit edit_article_path(user_article)
+              expect(page).to have_current_path articles_path(type: :reading_later)
+            end
           end
         end
       end
@@ -47,12 +48,13 @@ feature "Edit article page", type: :system, js: true do
 
   scenario "【ログイン後】に【ログインユーザー以外の読了記事】に対して【/articles/:id/edit】にアクセスしようとした場合、【あとで読むリストページ】にリダイレクトすること" do
     @users.each do |user|
-      login(uid: user[:uid]) do
-        rest_users =  @users.reject {|item| item == user}
-        rest_users.each do |rest_user|
-          rest_user[:finish_reading_articles].each do |article|
-            visit edit_article_path(article)
-            expect(page).to have_current_path articles_path(type: :reading_later)
+      login(user) do
+        @users.each_with_index do |rest_user, i|
+          unless rest_user == user 
+            @user_articles[i][:fr].each do |user_article|
+              visit edit_article_path(user_article)
+              expect(page).to have_current_path articles_path(type: :reading_later)
+            end
           end
         end
       end
@@ -60,7 +62,7 @@ feature "Edit article page", type: :system, js: true do
   end
 
   scenario "【ログイン後】に【存在しない記事ID】に対して【/articles/:id/edit】にアクセスしようとした場合、【あとで読むリストページ】にリダイレクトすること" do
-    login do
+    login(@users[0]) do
       visit edit_article_path(0)
       expect(page).to have_current_path articles_path(type: :reading_later)
     end
@@ -68,15 +70,15 @@ feature "Edit article page", type: :system, js: true do
 
   # ログイン・ログアウト
   scenario "【ログイン】ボタンが表示されないこと" do
-    login(uid: @user1[:uid]) do
-      visit edit_article_path(@user1[:reading_later_articles][0])
-      expect(page).to have_current_path  edit_article_path(@user1[:reading_later_articles][0])
+    login(@users[0]) do
+      visit edit_article_path(@user_articles[0][:rl][0])
+      expect(page).to have_current_path  edit_article_path(@user_articles[0][:rl][0])
     end
   end
 
   scenario "【ログアウト】ボタンを選択した場合、【ログイン前】状態になり【トップページ】が表示されること" do
-    login(uid: @user1[:uid], logout: false) do
-      visit edit_article_path(@user1[:reading_later_articles][0])
+    login(@users[0], logout: false) do
+      visit edit_article_path(@user_articles[0][:rl][0])
       click_on :logout_button
       expect(page).to have_current_path root_path
     end
@@ -84,67 +86,68 @@ feature "Edit article page", type: :system, js: true do
 
   # ページ遷移
   scenario "【ヘッダー】の【ロゴ】を選択した場合、【あとで読むリストページ】が表示されること" do
-    login(uid: @user1[:uid]) do
-      visit edit_article_path(@user1[:reading_later_articles][0])
+    login(@users[0]) do
+      visit edit_article_path(@user_articles[0][:rl][0])
       click_on :logo
       expect(page).to have_current_path articles_path(type: :reading_later)
     end
   end
 
   scenario "【フッター】の【利用規約】リンクを選択した場合、【利用規約ページ】が表示されること" do
-    login(uid: @user1[:uid]) do
-      visit edit_article_path(@user1[:reading_later_articles][0])
+    login(@users[0]) do
+      visit edit_article_path(@user_articles[0][:rl][0])
       click_on :tos_link
       expect(page).to have_current_path tos_path
     end
   end
 
   scenario "【フッター】の【プライバシーポリシー】リンクを選択した場合、【プライバシーポリシーページ】が表示されること" do
-    login(uid: @user1[:uid]) do
-      visit edit_article_path(@user1[:reading_later_articles][0])
+    login(@users[0]) do
+      visit edit_article_path(@user_articles[0][:rl][0])
       click_on :pp_link
       expect(page).to have_current_path pp_path
     end
   end
 
   scenario "【あとで読むリスト】の記事を読了しようとしてページ遷移してきたあとで、【キャンセル】リンクを選択した場合、【あとで読むリストページ】へ遷移すること" do
-    login(uid: @user1[:uid]) do
-      visit edit_article_path(@user1[:reading_later_articles][0])
+    login(@users[0]) do
+      visit edit_article_path(@user_articles[0][:rl][0])
       click_on :cancel_link
       
       expect(page).to have_current_path articles_path(type: :reading_later)
-      @user1[:reading_later_articles].each_with_index do |article, i|
-        expect(find("#article_cards").all(".article-card")[i].all("a")[0][:href]).to eq article.url
+      @user_articles[0][:rl].each_with_index do |user_article, i|
+        expect(find("#article_cards").all(".article-card")[i].all("a")[0][:href]).to eq user_article.article.url
       end
 
       visit articles_path(type: :finish_reading)
-      @user1[:finish_reading_articles].each_with_index do |article, i|
-        expect(find("#article_cards").all(".article-card")[i].all("a")[0][:href]).to eq article.url
+      @user_articles[0][:fr].each_with_index do |user_article, i|
+        expect(find("#article_cards").all(".article-card")[i].all("a")[0][:href]).to eq user_article.article.url
       end      
     end
   end
 
   scenario "【読了リスト】の記事のメモを更新しようとしてページ遷移してきたあとで、【キャンセル】リンクを選択した場合、【読了リストページ】へ遷移すること" do
-    login(uid: @user1[:uid]) do
-      visit edit_article_path(@user1[:finish_reading_articles][0])
+    login(@users[0]) do
+      visit edit_article_path(@user_articles[0][:fr][0])
       click_on :cancel_link
       
       expect(page).to have_current_path articles_path(type: :finish_reading)
-      @user1[:finish_reading_articles].each_with_index do |article, i|
-        expect(find("#article_cards").all(".article-card")[i].all("a")[0][:href]).to eq article.url
+      @user_articles[0][:fr].each_with_index do |user_article, i|
+        expect(find("#article_cards").all(".article-card")[i].all("a")[0][:href]).to eq user_article.article.url
       end
 
       visit articles_path(type: :reading_later)
-      @user1[:reading_later_articles].each_with_index do |article, i|
-        expect(find("#article_cards").all(".article-card")[i].all("a")[0][:href]).to eq article.url
+      @user_articles[0][:rl].each_with_index do |user_article, i|
+        expect(find("#article_cards").all(".article-card")[i].all("a")[0][:href]).to eq user_article.article.url
       end
     end
   end
 
   # 読了登録
   scenario "【あとで読むリストの記事】に対して【メモ】を未入力の状態で【読了！】ボタンを選択した場合、記事が読了リストに移動し、【あとで読むリストページ】に遷移すること" do
-    login(uid: @user1[:uid]) do
-      target_article = @user1[:reading_later_articles][0]
+    login(@users[0]) do
+      user_article = @user_articles[0][:rl][0]
+      target_article = @user_articles[0][:rl][0].article
       
       # ターゲットの記事があとで読むリストに存在することを検証
       visit articles_path(type: :reading_later)
@@ -155,8 +158,8 @@ feature "Edit article page", type: :system, js: true do
       expect(find("#article_cards").all(".article-card")[0].all("a")[0][:href]).not_to eq target_article.url
 
       # メモ未入力で読了登録
-      visit edit_article_path(target_article)
-      fill_in :article_memo, with: ""
+      visit edit_article_path(user_article)
+      fill_in :user_article_memo, with: ""
       click_on :update_article_button
 
       # ターゲットの記事があとで読むリストに存在しないことを検証
@@ -171,8 +174,9 @@ feature "Edit article page", type: :system, js: true do
   end
 
   scenario "【あとで読むリストの記事】に対して【メモ】を1001文字以上の状態で【読了！】ボタンを選択した場合、記事は読了リストに移動せず【文字数超過】のエラーメッセージが表示されること" do
-    login(uid: @user1[:uid]) do
-      target_article = @user1[:reading_later_articles][0]
+    login(@users[0]) do
+      user_article = @user_articles[0][:rl][0]
+      target_article = user_article.article
       
       # ターゲットの記事があとで読むリストに存在することを検証
       visit articles_path(type: :reading_later)
@@ -184,13 +188,13 @@ feature "Edit article page", type: :system, js: true do
         expect(article_card.all("a")[0][:href]).not_to eq target_article.url
       end
 
-      # メモ未入力で読了登録
-      visit edit_article_path(target_article)
-      fill_in :article_memo, with: "a" * 1001
+      # メモ1001文字以上で読了登録
+      visit edit_article_path(user_article)
+      fill_in :user_article_memo, with: Faker::Alphanumeric.alphanumeric(number: 1001)
       click_on :update_article_button
 
       # エラーが発生することを検証
-      expect(page).to have_current_path edit_article_path(target_article)
+      expect(page).to have_current_path edit_article_path(user_article)
       expect(page).to have_text "メモは1000文字以内で入力してください"
 
       # ターゲットの記事があとで読むリストに存在することを検証
@@ -212,8 +216,9 @@ feature "Edit article page", type: :system, js: true do
   ].each do |memo|
     scenario "【あとで読むリストの記事】に対して【メモ】を入力した状態で【読了！】ボタンを選択した場合、記事は読了リストに移動し、【あとで読むリストページ】に遷移すること" do
 
-      login(uid: @user1[:uid]) do
-        target_article = @user1[:reading_later_articles][0]
+      login(@users[0]) do
+        user_article = @user_articles[0][:rl][0]
+        target_article = user_article.article
         
         # ターゲットの記事があとで読むリストに存在することを検証
         visit articles_path(type: :reading_later)
@@ -226,8 +231,8 @@ feature "Edit article page", type: :system, js: true do
         end
 
         # メモ未入力で読了登録
-        visit edit_article_path(target_article)
-        fill_in :article_memo, with: memo
+        visit edit_article_path(user_article)
+        fill_in :user_article_memo, with: memo
         click_on :update_article_button
 
         # ターゲットの記事があとで読むリストに存在しないことを検証
@@ -246,9 +251,10 @@ feature "Edit article page", type: :system, js: true do
 
   # メモ更新
   scenario "【読了リストの記事】に対して【メモ】を未入力の状態で【読了！】ボタンを選択した場合、記事のメモが更新され、【読了リストページ】へ遷移すること" do
-    login(uid: @user1[:uid]) do
-      target_article = @user1[:finish_reading_articles][0]
-      memo_before = target_article.memo.to_s
+    login(@users[0]) do
+      user_article = @user_articles[0][:fr][0]
+      target_article = user_article.article
+      memo_before = user_article.memo.to_s
       memo_after = ""
       
       # ターゲットの記事が読了リストに存在することを検証
@@ -262,9 +268,9 @@ feature "Edit article page", type: :system, js: true do
       end
 
       # メモ未入力で読了登録
-      visit edit_article_path(target_article)
-      expect(find("#article_memo").value).to eq memo_before
-      fill_in :article_memo, with: memo_after
+      visit edit_article_path(user_article)
+      expect(find("#user_article_memo").value).to eq memo_before
+      fill_in :user_article_memo, with: memo_after
       click_on :update_article_button
 
       # ターゲットの記事が読了リストに存在しメモが更新されていることを検証
@@ -281,10 +287,11 @@ feature "Edit article page", type: :system, js: true do
   end
 
   scenario "【読了リストの記事】に対して【メモ】を1001文字以上の状態で【読了！】ボタンを選択した場合、記事のメモは更新されず、【文字数超過】のエラーメッセージが表示されること" do
-    login(uid: @user1[:uid]) do
-      target_article = @user1[:finish_reading_articles][0]
-      memo_before = target_article.memo.to_s
-      memo_after = ""
+    login(@users[0]) do
+      user_article = @user_articles[0][:fr][0]
+      target_article = user_article.article
+      memo_before = user_article.memo.to_s
+      memo_after = Faker::Alphanumeric.alphanumeric(number: 1001)
       
       # ターゲットの記事が読了リストに存在することを検証
       visit articles_path(type: :finish_reading)
@@ -297,13 +304,13 @@ feature "Edit article page", type: :system, js: true do
       end
 
       # メモ未入力で読了登録
-      visit edit_article_path(target_article)
-      expect(find("#article_memo").value).to eq memo_before
-      fill_in :article_memo, with: "a" * 1001
+      visit edit_article_path(user_article)
+      expect(find("#user_article_memo").value).to eq memo_before
+      fill_in :user_article_memo, with: "a" * 1001
       click_on :update_article_button
 
       # エラーが発生することを検証
-      expect(page).to have_current_path edit_article_path(target_article)
+      expect(page).to have_current_path edit_article_path(user_article)
       expect(page).to have_text "メモは1000文字以内で入力してください"
 
       # ターゲットの記事が読了リストに存在してメモが更新されていないことを検証
@@ -332,9 +339,10 @@ feature "Edit article page", type: :system, js: true do
   ].each do |memo|
     scenario "【読了リストの記事】に対して【メモ】を入力した状態で【読了！】ボタンを選択した場合、記事のメモが更新され、【読了リストページ】へ遷移すること" do
 
-      login(uid: @user1[:uid]) do
-        target_article = @user1[:finish_reading_articles][0]
-        memo_before = target_article.memo.to_s
+      login(@users[0]) do
+        user_article = @user_articles[0][:fr][0]
+        target_article = user_article.article
+        memo_before = user_article.memo.to_s
         
         # ターゲットの記事が読了リストに存在することを検証
         visit articles_path(type: :finish_reading)
@@ -347,9 +355,9 @@ feature "Edit article page", type: :system, js: true do
         end
 
         # メモ未入力で読了登録
-        visit edit_article_path(target_article)
-        expect(find("#article_memo").value).to eq memo_before
-        fill_in :article_memo, with: memo
+        visit edit_article_path(user_article)
+        expect(find("#user_article_memo").value).to eq memo_before
+        fill_in :user_article_memo, with: memo
         click_on :update_article_button
 
         # ターゲットの記事のメモが更新されて読了リストに存在することを検証
@@ -369,11 +377,12 @@ feature "Edit article page", type: :system, js: true do
 
   ### SNSシェア
   scenario "【Tweet】ボタンを選択した場合、【ツイートページ】に遷移すること" do
-    login(uid: @user1[:uid]) do
-      [@user1[:reading_later_articles][0], @user1[:finish_reading_articles][0]].each do |article|
-        ["感動大作\nおすすめ！", ""].each do |memo|
-          visit edit_article_path(article)
-          fill_in :article_memo, with: memo
+    login(@users[0]) do
+      [@user_articles[0][:rl][0], @user_articles[0][:fr][0]].each do |user_article|
+        article = user_article.article
+        ["#{Faker::Hipster.sentence}\n#{Faker::Hipster.sentence}", ""].each do |memo|
+          visit edit_article_path(user_article)
+          fill_in :user_article_memo, with: memo
           click_on :tweet_button
           switch_to_window(windows.last)
           url = CGI.unescape(current_url)

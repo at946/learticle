@@ -13,17 +13,17 @@
       </figure>
     </div>
   <% end %>
-  <% if memo_visible and article.memo.present? %>
-    <div class="card-content article-memo has-text-dark"><%= safe_join(article.memo.split("\n"), tag(:br)) %></div>
+  <% if memo_visible and user_article.memo.present? %>
+    <div class="card-content article-memo has-text-dark"><%= safe_join(user_article.memo.split("\n"), tag(:br)) %></div>
   <% end %>
   <footer class="card-footer">
     <% case params[:type] %>
     <% when "reading_later" %>
-      <%= link_to "読了！", edit_article_path(article), class: "finish-reading-button card-footer-item has-background-primary has-text-white has-text-weight-bold" %>
-      <%= link_to "削除", delete_article_path(article), method: :delete, class: "card-footer-item has-text-danger card-delete-button", data: {confirm: "#{article.title}を削除しますか？"} %>
+      <%= link_to "読了！", edit_article_path(user_article), class: "finish-reading-button card-footer-item has-background-primary has-text-white has-text-weight-bold" %>
+      <%= link_to "削除", delete_article_path(user_article), method: :delete, class: "card-footer-item has-text-danger card-delete-button", data: {confirm: "#{article.title}を削除しますか？"} %>
     <% when "finish_reading" %>
-      <%= link_to "メモ編集", edit_article_path(article), class: "edit-memo-button card-footer-item" %>
-      <% tweet_text = article.memo.present? ? "#{article.memo}" : "読みました！" %>
+      <%= link_to "メモ編集", edit_article_path(user_article), class: "edit-memo-button card-footer-item" %>
+      <% tweet_text = user_article.memo.present? ? "#{user_article.memo}" : "読みました！" %>
       <% tweet_text += "\n\n#Learticle\n" %>
       <%= link_to "https://twitter.com/intent/tweet?text=#{CGI.escape(tweet_text)}&url=#{CGI.escape(article.url)}", class: "article-tweet-button card-footer-item has-text-white", style: "background-color: #1DA1F2;", target: "_blank" do %>
         <i class="fab fa-twitter"></i>

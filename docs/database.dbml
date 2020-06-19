@@ -4,20 +4,39 @@ Project Larticle {
 
 Table articles {
   id integer [pk, increment]
-  uid string [not null]
   url text [not null, note: "max-length: 2000"]
-  title string [not null]
+  title string
   image_url text
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
+
+Table users {
+  id string [pk, not null, note: "20文字のランダムな文字列"]
+  auth0_uid string [not null]
+  name string [not null]
+  image text [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  Note: "ログイン都度、情報更新"
+}
+
+Table user_article {
+  id integer [pk, increment]
+  user_id string [not null]
+  article_id integer [not null]
   finish_reading_at datetime
   memo text [note: "max-length: 1000"]
   created_at timestamp [not null]
   updated_at timestamp [not null]
 }
 
-Table users {
+Table auth0_users {
   uid string [pk]
   provider string
   Note: "auth0. https://github.com/auth0/omniauth-auth0#auth-hash"
 }
 
-Ref: users.uid - articles.uid
+Ref: users.auth0_uid - auth0_users.uid
+Ref: users.id < user_article.user_id
+Ref: articles.id < user_article.article_id

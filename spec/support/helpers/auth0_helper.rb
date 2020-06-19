@@ -2,11 +2,15 @@ module Auth0Helper
   OmniAuth.config.test_mode = true
 
   # Mock userでログイン
-  def login(uid: 'google-oauth2|123456789012345678901', logout: true, &block)
+  def login(user, logout: true, &block)
     OmniAuth.config.mock_auth[:auth0] = nil
     OmniAuth.config.mock_auth[:auth0] = OmniAuth::AuthHash.new({
       :provider => 'auth0',
-      :uid => uid
+      :uid => user.auth0_uid,
+      :info => {
+        :name => user.name,
+        :image => user.image
+      }
     })
 
     Rails.application.env_config["omniauth.auth"] = OmniAuth.config.mock_auth[:auth0]

@@ -5,7 +5,8 @@ feature "Top page", type: :system, js: true do
   end
 
   scenario "【ログイン後】に【/】にアクセスしようとした場合、【あとで読むリストページ】にリダイレクトされること" do
-    login do
+    user = create(:user)
+    login(user) do
       visit root_path
       expect(page).to have_current_path articles_path(type: :reading_later)
     end

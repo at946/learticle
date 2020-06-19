@@ -4,6 +4,7 @@ ja:
     attributes:
       article:
         url: "URL"
+      user_article:
         memo: "メモ"
     errors:
       messages:

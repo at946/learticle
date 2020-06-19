@@ -35,7 +35,11 @@
 /yarn-debug.log*
 /.yarn-integrity
 /.bash_history
+/.irb_history
 /.browserslistrc
 
 # Ignore dotenv
 .env
+
+# RSpec only-failures
+spec/examples.txt

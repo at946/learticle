@@ -1,9 +1,9 @@
-<% if article.errors.any? %>
-  <article id="error_message_area" class="message is-danger">
+<% if model.errors.present? %>
+  <div id="error_message_area" class="message is-danger">
     <ul class="message-body">
-      <% article.errors.full_messages.each do |msg| %>
+      <% model.errors.full_messages.each do |msg| %>
         <li><%= msg %></li>
       <% end %>
     </ul>
-  </article>
+  </div>
 <% end %>

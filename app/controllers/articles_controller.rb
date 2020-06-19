@@ -1,39 +1,47 @@
 class ArticlesController < ApplicationController
   before_action :redirect_unless_logged_in
   before_action :set_articles, only: [:index, :create]
-  before_action :set_article, only: [:edit, :update]
+  before_action :set_user_article, only: [:edit, :update]
 
   def index
     @article = Article.new
   end
 
   def create
-    @article = Article.new(article_params)
-    @article.uid = current_user["uid"]
+    @article = Article.find_by(url: article_params[:url])
+    @article ||= Article.new(article_params)
+
     if @article.save
-      redirect_to articles_path(type: :reading_later)
+      user_article = UserArticle.new
+      user_article.user = current_user
+      user_article.article = @article
+
+      if user_article.save
+        redirect_to articles_path(type: :reading_later)
+      else
+        @article.errors.add(:base, :already_registered, message: "この記事はすでに登録されています")
+        render :index
+      end
+
     else
       render :index
     end
   end
 
   def edit
-    redirect_to articles_path(type: :reading_later) if @article.uid != current_user["uid"]
   end
 
   def update
-    redirect_to articles_path(type: :reading_later) if @article.uid != current_user["uid"]
-
     redirect_link_type = :finish_reading
-    @article.assign_attributes(finish_reading_params)
+    @user_article.assign_attributes(user_article_params)
     
     # あとで読むリストの記事だった場合
-    if @article.finish_reading_at.blank?
-      @article.finish_reading_at = Time.now
+    if @user_article.finish_reading_at.blank?
+      @user_article.finish_reading_at = Time.now
       redirect_link_type = :reading_later
     end
 
-    if @article.save
+    if @user_article.save
       redirect_to articles_path(type: redirect_link_type)
     else
       render :edit
@@ -41,8 +49,12 @@ class ArticlesController < ApplicationController
   end
 
   def destroy
-    article = Article.find(params[:id])
-    article.destroy
+    user_article = UserArticle.find_by(id: params[:id], user_id: current_user.id)
+    unless user_article.nil?
+      article = user_article.article
+      user_article.destroy
+      article.destroy if article.user_articles.blank?
+    end
     redirect_to articles_path(type: :reading_later)
   end
 
@@ -51,26 +63,24 @@ class ArticlesController < ApplicationController
       params.require(:article).permit(:url)
     end
 
-    def finish_reading_params
-      params.require(:article).permit(:memo)
+    def user_article_params
+      params.require(:user_article).permit(:memo)
     end
 
     def set_articles
       case params[:type]
       when "reading_later"
-        @articles = Article.where(uid: current_user["uid"], finish_reading_at: nil).order(:created_at)
+        @user_articles = current_user.user_articles.where(finish_reading_at: nil).order(created_at: :asc)
       when "finish_reading"
-        @articles = Article.where(uid: current_user["uid"]).where.not(finish_reading_at: nil).order(finish_reading_at: :desc)
+        @user_articles = current_user.user_articles.where.not(finish_reading_at: nil).order(finish_reading_at: :desc)
       else
         redirect_to articles_path(type: :reading_later)
       end
     end
 
-    def set_article
-      begin
-        @article = Article.find(params[:id])
-      rescue => exception
-        redirect_to articles_path(type: :reading_later)
-      end
+    def set_user_article
+      @user_article = UserArticle.find_by(id: params[:id], user_id: current_user.id)
+      redirect_to articles_path(type: :reading_latter) if @user_article.nil?
+      @article = @user_article.article unless @user_article.nil?
     end
 end

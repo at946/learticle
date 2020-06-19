@@ -1,17 +1,30 @@
 <section class="section">
   <div class="container">
     <%= render "tab" %>
-    <%= render "add_article_form", article: @article if params[:type] == "reading_later" %>
     
+    <% case params[:type] %>
+    <% when "reading_later" %>
+      <%= render "error_message", model: @article %>
+      <%= render "add_article_form", article: @article %>
+    <% when "finish_reading" %>
+      <%# 
+      <div class="iframe-wrapper">
+        <iframe src="https://pixe.la/v1/users/at-test/graphs/test-graph.html?mode=simple" frameborder="0" scrolling="no"></iframe>
+      </div>
+      %>
+    <% end %>
+
     <p class="has-text-right">
-      <%= params[:type] == "finish_reading" ? "読了記事数" : "あとで読む記事数"  %>：<span class="is-size-3 has-text-primary has-text-weight-bold"><%= @articles.count %></span>
+      <%= params[:type] == "finish_reading" ? "読了記事数" : "あとで読む記事数"  %>：<span class="is-size-3 has-text-primary has-text-weight-bold"><%= @user_articles.count %></span>
     </p>
 
     <div id="article_cards" class="columns is-multiline">
-      <% @articles.each do |article| %>
-        <div class="column is-half-tablet is-one-third-desktop">
-          <%= render "article_card", article: article, memo_visible: true %>
-        </div>
+      <% if @user_articles.present? %>
+        <% @user_articles.each do |user_article| %>
+          <div class="column is-half-tablet is-one-third-desktop">
+            <%= render "article_card", user_article: user_article, article: user_article.article, memo_visible: true %>
+          </div>
+        <% end %>
       <% end %>
     </div>
   </div>

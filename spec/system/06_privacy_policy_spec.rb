@@ -1,4 +1,8 @@
 feature "Privacy policy page", type: :system, js: true do
+  background do
+    @user = create(:user)
+  end
+
   ### アクセス
   scenario "【ログイン前】に【/privacy_policy】にアクセスしようとした場合、【プライバシーポリシーページ】が表示されること" do
     visit pp_path
@@ -6,7 +10,7 @@ feature "Privacy policy page", type: :system, js: true do
   end
 
   scenario "【ログイン後】に【/privacy_policy】にアクセスしようとした場合、【プライバシーポリシーページ】が表示されること" do
-    login do
+    login(@user) do
       visit pp_path
       expect(page).to have_current_path pp_path
     end
@@ -30,14 +34,14 @@ feature "Privacy policy page", type: :system, js: true do
   end
 
   scenario "【ログイン後】に【ヘッダー】に【ログイン】ボタンが表示されないこと" do
-    login do
+    login(@user) do
       visit pp_path
       expect(page).not_to have_selector "#login_button"
     end
   end
 
   scenario "【ログイン後】に【ヘッダー】の【ログアウト】ボタンを選択した場合、【ログイン前】状態になり【トップページ】が表示されること" do
-    login(logout: false) do
+    login(@user, logout: false) do
       visit pp_path
       click_on :logout_button
       expect(page).to have_current_path root_path
@@ -52,7 +56,7 @@ feature "Privacy policy page", type: :system, js: true do
   end
 
   scenario "【ログイン後】に【ヘッダー】の【ロゴ】を選択した場合、【あとで読むページ】が表示されること" do
-    login do
+    login(@user) do
       visit pp_path
       click_on :logo
       expect(page).to have_current_path articles_path(type: :reading_later)
@@ -66,7 +70,7 @@ feature "Privacy policy page", type: :system, js: true do
   end
 
   scenario "【ログイン後】に【フッター】の【利用規約】リンクを選択した場合、【プライバシーポリシーページ】が表示されること" do
-    login do
+    login(@user) do
       visit pp_path
       click_on :tos_link
       expect(page).to have_current_path tos_path
@@ -79,7 +83,7 @@ feature "Privacy policy page", type: :system, js: true do
   end
 
   scenario "【ログイン後】に【フッター】の【プライバシーポリシー】リンクを選択できないこと" do
-    login do
+    login(@user) do
       visit pp_path
       expect(page).not_to have_selector "a#pp_link"
     end

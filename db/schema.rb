@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_30_143204) do
+ActiveRecord::Schema.define(version: 2020_06_17_145836) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -35,10 +35,32 @@ ActiveRecord::Schema.define(version: 2020_05_30_143204) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "title"
     t.text "image_url"
-    t.string "uid", null: false
+    t.string "uid"
     t.datetime "finish_reading_at"
     t.text "memo"
     t.index ["uid"], name: "index_articles_on_uid"
   end
 
+  create_table "user_articles", force: :cascade do |t|
+    t.string "user_id", null: false
+    t.bigint "article_id", null: false
+    t.datetime "finish_reading_at"
+    t.text "memo"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["article_id"], name: "index_user_articles_on_article_id"
+    t.index ["user_id", "article_id"], name: "index_user_articles_on_user_id_and_article_id", unique: true
+    t.index ["user_id"], name: "index_user_articles_on_user_id"
+  end
+
+  create_table "users", id: :string, force: :cascade do |t|
+    t.string "auth0_uid", null: false
+    t.string "name", null: false
+    t.text "image", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  add_foreign_key "user_articles", "articles"
+  add_foreign_key "user_articles", "users"
 end
