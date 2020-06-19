@@ -388,7 +388,7 @@ feature "Edit article page", type: :system, js: true do
           url = CGI.unescape(current_url)
           expect(url).to include "https://twitter.com/intent/tweet"
           # 【ツイートページ】の【テキストエリア】に【記事】の入力中の【メモ】が入力されていること
-          expect(url).not_to include article.to_s if article.memo.present?
+          expect(url).not_to include article.to_s if user_article.memo.present?
           if memo.present?
             expect(url).to include memo
             expect(url).not_to include "読みました！"

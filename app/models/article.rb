@@ -12,9 +12,6 @@ class Article < ApplicationRecord
     length: { maximum: 2000 },
     uniqueness: true
 
-  validates :memo,
-    length: { maximum: 1000 }
-
   private
     def strip_all_space_from_url
       self.url.gsub!(/(^[[:space:]]+)|([[:space:]]+$)/, '')
