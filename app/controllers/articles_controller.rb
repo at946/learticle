@@ -33,15 +33,29 @@ class ArticlesController < ApplicationController
 
   def update
     redirect_link_type = :finish_reading
+    pixela_flag = false
     @user_article.assign_attributes(user_article_params)
     
     # あとで読むリストの記事だった場合
     if @user_article.finish_reading_at.blank?
       @user_article.finish_reading_at = Time.now
       redirect_link_type = :reading_later
+      pixela_flag = true
     end
 
     if @user_article.save
+      if pixela_flag && !Rails.env.test?
+        res = Faraday.put("#{ENV['PIXELA_BASE_URL']}/graphs/#{current_user.id}/increment") do |req|
+          req.headers["X-USER-TOKEN"] = ENV["PIXELA_X_USER_TOKEN"]
+          req.headers["Content-Length"] = 0
+        end
+        unless res.success?
+          puts "Faraday failed when finish reading."
+          puts "status: #{res.status}"
+          puts "headers: #{res.headers}"
+          puts "body: #{res.body}"
+        end
+      end
       redirect_to articles_path(type: redirect_link_type)
     else
       render :edit

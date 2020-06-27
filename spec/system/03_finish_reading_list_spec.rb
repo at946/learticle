@@ -65,7 +65,7 @@ feature "Finish reading list page", type: :system, js: true do
     end
   end
 
-  # コンテンツ表示
+  # 記事表示
   scenario "ログインユーザーが読了した記事が読了日時降順で表示されていること" do
     @users.each_with_index do |user, i|
       login(user) do
@@ -143,12 +143,31 @@ feature "Finish reading list page", type: :system, js: true do
     end
   end
 
+  # あとで読む数の表示
+  scenario "あとで読む記事の数が表示されないこと" do
+    @users.each_with_index do |user, i|
+      login(user) do
+        visit articles_path(type: :finish_reading)
+        expect(page).not_to have_text "あとで読む記事数：#{@user_articles[i][:rl].count}"
+      end
+    end
+  end
+
+  # 読了数の表示
   scenario "読了記事の数が表示されること" do
     @users.each_with_index do |user, i|
       login(user) do
         visit articles_path(type: :finish_reading)
         expect(page).to have_text "読了記事数：#{@user_articles[i][:fr].count}"
       end
+    end
+  end
+
+  # あとで読む登録
+  scenario "URLを入力できないこと" do
+    login(@users[0]) do
+      visit articles_path(type: :finish_reading)
+      expect(page).not_to have_selector "#article_url"
     end
   end
 
@@ -162,7 +181,7 @@ feature "Finish reading list page", type: :system, js: true do
     end
   end
 
-  ### コメント編集
+  # コメント編集
   scenario "【記事】の【メモ編集】ボタンを選択した場合、【記事編集ページ】に遷移すること" do
     login(@users[0]) do
       visit articles_path(type: :finish_reading)
@@ -171,7 +190,7 @@ feature "Finish reading list page", type: :system, js: true do
     end
   end
 
-  ### SNSシェア
+  # SNSシェア
   scenario "【記事】の【Tweet】ボタンを選択した場合、【ツイートページ】に遷移すること" do
     login(@users[0]) do
       visit articles_path(type: :finish_reading)
@@ -202,13 +221,4 @@ feature "Finish reading list page", type: :system, js: true do
       expect(target).not_to have_selector ".card-delete-button"
     end
   end
-
-  # ### 読了記録
-  # scenario "【読了数】を可視化する【Pixela】が表示されること" do
-  #   login(uid: @user1[:uid]) do
-  #     visit articles_path(type: :finish_reading)
-  #     iframe = find("#iframe_pixela")
-  #     expect(iframe[:src]).to eq "https://pixe.la/v1/users/learticle-dev/graphs/"
-  #   end
-  # end
 end

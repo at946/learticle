@@ -7,11 +7,11 @@
       <%= render "error_message", model: @article %>
       <%= render "add_article_form", article: @article %>
     <% when "finish_reading" %>
-      <%# 
-      <div class="iframe-wrapper">
-        <iframe src="https://pixe.la/v1/users/at-test/graphs/test-graph.html?mode=simple" frameborder="0" scrolling="no"></iframe>
-      </div>
-      %>
+      <% unless Rails.env.test? %>
+        <div class="iframe-wrapper">
+          <iframe src=<%= "#{ENV["PIXELA_BASE_URL"]}/graphs/#{current_user.id}.html?mode=simple" %> frameborder="0" scrolling="no"></iframe>
+        </div>
+      <% end %>
     <% end %>
 
     <p class="has-text-right">

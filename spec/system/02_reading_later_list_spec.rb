@@ -18,7 +18,7 @@ feature "Reading later list page", type: :system, js: true do
     end
   end
 
-  # ログイン・ログアウト
+  # ログイン
   scenario "【ログイン】ボタンが表示されないこと" do
     login(@users[0]) do
       visit articles_path(type: :reading_later)
@@ -26,6 +26,7 @@ feature "Reading later list page", type: :system, js: true do
     end
   end
 
+  # ログアウト
   scenario "【ログアウト】ボタンを選択した場合、【ログイン前】状態になり【トップページ】が表示されること" do
     login(@users[0], logout: false) do
       visit articles_path(type: :reading_later)
@@ -68,7 +69,7 @@ feature "Reading later list page", type: :system, js: true do
   end
 
 
-  # コンテンツ表示
+  # 記事表示
   scenario "ログインユーザーが登録した記事が登録日時昇順で表示されていること" do
     @users.each_with_index do |user, i|
       login(user) do
@@ -145,6 +146,7 @@ feature "Reading later list page", type: :system, js: true do
     end
   end
 
+  # あとで読む数の表示
   scenario "あとで読む記事の数が表示されること" do
     @users.each_with_index do |user, i|
       login(user) do
@@ -154,7 +156,17 @@ feature "Reading later list page", type: :system, js: true do
     end
   end
 
-  ### URL登録
+  # 読了数の表示
+  scenario "読了記事数が表示されないこと" do
+    @users.each_with_index do |user, i|
+      login(user) do
+        visit articles_path(type: :reading_later)
+        expect(page).not_to have_text "読了記事数：#{@user_articles[i][:fr].count}"
+      end
+    end
+  end
+
+  # あとで読む登録
   scenario "【URL】が未入力の状態で【あとで読む】ボタンを選択した場合、Articleモデルは作成されず【あとで読むリストページ】で【URL未入力】のエラーメッセージが表示されること" do
     url = ""
 
@@ -291,7 +303,7 @@ feature "Reading later list page", type: :system, js: true do
     end
   end
 
-  ### 読了登録
+  # 読了登録
   scenario "【記事】の【読了！】ボタンを選択した場合、【記事編集ページ】へ遷移すること" do
     login(@users[0]) do
       visit articles_path(type: :reading_later)
@@ -301,7 +313,7 @@ feature "Reading later list page", type: :system, js: true do
     end
   end
 
-  ### コメント編集
+  # コメント編集
   scenario  "【記事】の【メモ編集】ボタンが存在しないこと" do
     login(@users[0]) do
       visit articles_path(type: :reading_later)
@@ -311,7 +323,7 @@ feature "Reading later list page", type: :system, js: true do
     end
   end
 
-  ### SNSシェア
+  # SNSシェア
   scenario "【記事】の【Tweet】ボタンが存在しないこと" do
     login(@users[0]) do
       visit articles_path(type: :reading_later)
@@ -321,7 +333,7 @@ feature "Reading later list page", type: :system, js: true do
     end
   end
 
-  ### 記事削除
+  # 記事削除
   scenario "【記事】の【削除】ボタンを選択した場合、【削除確認ダイアログ】が表示されること" do
     login(@users[0]) do
       visit articles_path(type: :reading_later)

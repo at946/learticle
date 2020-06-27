@@ -1,4 +1,6 @@
 feature "Top page", type: :system, js: true do
+  
+  # アクセス
   scenario "【ログイン前】に【/】にアクセスしようとした場合、【トップページ】が表示されること" do
     visit root_path
     expect(page).to have_current_path root_path
@@ -12,6 +14,7 @@ feature "Top page", type: :system, js: true do
     end
   end
 
+  # ログイン
   scenario "ヘッダーの【ログイン】ボタンを選択した場合、【ログインページ】が表示されること" do
     visit root_path
 
@@ -34,12 +37,13 @@ feature "Top page", type: :system, js: true do
     expect(page).to have_current_path articles_path(type: :reading_later)
   end
 
+  # ログアウト
   scenario "【ログアウト】ボタンが表示されないこと" do
     visit root_path
     expect(page).not_to have_selector "#logout_button"
   end
 
-  ### ページ遷移
+  # ページ遷移
   scenario "【ヘッダー】の【ロゴ】を選択した場合、【トップページ】が表示されること" do
     visit root_path
     click_on :logo
