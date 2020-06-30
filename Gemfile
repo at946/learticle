@@ -68,3 +68,6 @@ gem 'omniauth-rails_csrf_protection', '~> 0.1'
 
 # metatags
 gem 'meta-tags'
+
+# Bulma
+gem 'bulma-rails', "~> 0.9.0"

@@ -1,7 +1,7 @@
 module MetaTagsHelper
   def default_meta_tags
     {
-      site: "Learticle",
+      site: "Learticle | ネットサーフィンを学びの時間に",
       # title: "Learticle",
       reverse: true,
       charset: "utf-8",

@@ -18,14 +18,16 @@
       <%= params[:type] == "finish_reading" ? "読了記事数" : "あとで読む記事数"  %>：<span class="is-size-3 has-text-primary has-text-weight-bold"><%= @user_articles.count %></span>
     </p>
 
-    <div id="article_cards" class="columns is-multiline">
-      <% if @user_articles.present? %>
+    <% if @user_articles.present? %>
+      <div id="article_cards" class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": ".grid-sizer", "gutter": ".gutter-sizer", "percentPosition": true, "fitWidth": true }'>
+        <div class="grid-sizer"></div>
+        <div class="gutter-sizer"></div>
         <% @user_articles.each do |user_article| %>
-          <div class="column is-half-tablet is-one-third-desktop">
-            <%= render "article_card", user_article: user_article, article: user_article.article, memo_visible: true %>
-          </div>
+          <%= render "article_card", user_article: user_article, article: user_article.article, memo_visible: true %>
         <% end %>
-      <% end %>
-    </div>
+      </div>
+    <% end %>
   </div>
 </section>
+
+<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>

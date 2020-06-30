@@ -1,7 +1,7 @@
 $primary: #2EC0B2;
 $navbar-breakpoint: 0;
-@import 'bulma/bulma.sass';
+@import 'bulma';
 @import '@fortawesome/fontawesome-free/scss/fontawesome';
-@import 'spacing';
 @import 'footer';
 @import 'iframe';
+@import 'masonry';
