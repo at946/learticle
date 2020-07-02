@@ -19,9 +19,8 @@
     </p>
 
     <% if @user_articles.present? %>
-      <div id="article_cards" class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": ".grid-sizer", "gutter": ".gutter-sizer", "percentPosition": true, "fitWidth": true }'>
+      <div id="article_cards" class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": ".grid-sizer", "gutter": 16, "percentPosition": false, "fitWidth": true }'>
         <div class="grid-sizer"></div>
-        <div class="gutter-sizer"></div>
         <% @user_articles.each do |user_article| %>
           <%= render "article_card", user_article: user_article, article: user_article.article, memo_visible: true %>
         <% end %>
